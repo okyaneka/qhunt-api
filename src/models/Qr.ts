@@ -1,6 +1,5 @@
 import mongoose, { ToObjectOptions } from "mongoose";
 import { IdName, idNameSchema } from ".";
-import CryptoJS from "crypto-js";
 
 export interface Qr {
   id: string;
