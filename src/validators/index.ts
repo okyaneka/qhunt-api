@@ -9,5 +9,5 @@ export interface DefaultListParams {
 export const DefaultListParamsFields = {
   page: Joi.number().default(1),
   limit: Joi.number().default(10),
-  search: Joi.string().default(""),
+  search: Joi.string().allow("").default(""),
 };
