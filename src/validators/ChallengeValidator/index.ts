@@ -1,6 +1,6 @@
-import schema from "~/helpers/schema";
-import { DefaultListParams, DefaultListParamsFields } from "..";
 import Joi from "joi";
+import schema from "~/helpers/schema";
+import { DefaultListParams, DefaultListParamsFields } from "~/validators";
 
 export interface ChallengeListParams extends DefaultListParams {
   stageId: string;

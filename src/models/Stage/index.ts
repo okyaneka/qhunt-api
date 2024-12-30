@@ -1,4 +1,5 @@
-import mongoose, { ToObjectOptions } from "mongoose";
+import mongoose from "mongoose";
+import { ToObject } from "~/helpers/schema";
 
 export interface Stage {
   id: string;
@@ -8,13 +9,6 @@ export interface Stage {
   updatedAt: Date;
   deletedAt: Date | null;
 }
-
-const toObjectOptions: ToObjectOptions = {
-  transform: (doc, ret) => {
-    const { _id, deletedAt, ...rest } = ret;
-    return { id: _id, ...rest };
-  },
-};
 
 const stageSchema = new mongoose.Schema<Stage>(
   {
@@ -30,11 +24,8 @@ const stageSchema = new mongoose.Schema<Stage>(
   }
 );
 
-stageSchema.virtual("id").get(function () {
-  return this._id.toString();
-});
-stageSchema.set("toObject", toObjectOptions);
-stageSchema.set("toJSON", toObjectOptions);
+stageSchema.set("toObject", ToObject);
+stageSchema.set("toJSON", ToObject);
 
 const Stage = mongoose.model<Stage>("Stage", stageSchema);
 

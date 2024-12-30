@@ -1,13 +1,13 @@
 import { Router } from "express";
 import CryptoJS from "crypto-js";
 import response from "~/helpers/response";
-import Qr from "~/models/Qr";
-import AuthMiddleware from "~/middlewares/AuthMiddleware";
 import {
   QrDeleteBulkPayloadSchema,
   QrGeneratePayloadSchema,
   QrListParamsSchema,
 } from "~/validators/QrValidator";
+import { Qr } from "~/models";
+import { AuthMiddleware } from "~/middlewares";
 
 const QrRoute = Router();
 

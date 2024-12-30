@@ -1,8 +1,7 @@
-import { Router } from "express";
 import response from "~/helpers/response";
-import AuthMiddleware from "~/middlewares/AuthMiddleware";
-import { Stage } from "~/models";
-import Challenge from "~/models/Challenge";
+import { Router } from "express";
+import { AuthMiddleware } from "~/middlewares";
+import { Challenge, Stage } from "~/models";
 import {
   ChallengeCreatePayloadSchema,
   ChallengeListParamsSchema,

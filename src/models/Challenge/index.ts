@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IdName, idNameSchema, Timestamps } from ".";
+import { IdName, idNameSchema, Timestamps } from "~/models";
 import { ToObject } from "~/helpers/schema";
 
 export interface Challenge extends Timestamps {
