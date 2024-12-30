@@ -1,5 +1,6 @@
-import mongoose, { ToObjectOptions } from "mongoose";
-import { IdName, idNameSchema } from ".";
+import mongoose from "mongoose";
+import { ToObject } from "~/helpers/schema";
+import { IdName, idNameSchema } from "~/models";
 
 export interface Qr {
   id: string;
@@ -12,13 +13,6 @@ export interface Qr {
   updatedAt: Date;
   deletedAt: Date | null;
 }
-
-const toObjectOptions: ToObjectOptions = {
-  transform: (doc, ret) => {
-    const { _id, deletedAt, ...rest } = ret;
-    return { id: _id, ...rest };
-  },
-};
 
 const qrSchema = new mongoose.Schema<Qr>(
   {
@@ -37,11 +31,8 @@ const qrSchema = new mongoose.Schema<Qr>(
   }
 );
 
-qrSchema.virtual("id").get(function () {
-  return this._id.toString();
-});
-qrSchema.set("toObject", toObjectOptions);
-qrSchema.set("toJSON", toObjectOptions);
+qrSchema.set("toObject", ToObject);
+qrSchema.set("toJSON", ToObject);
 
 export const Qr = mongoose.model<Qr>("Qr", qrSchema);
 

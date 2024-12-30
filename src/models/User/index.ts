@@ -1,4 +1,4 @@
-import mongoose, { ToObjectOptions } from "mongoose";
+import mongoose from "mongoose";
 
 export interface User {
   email: string;
@@ -6,19 +6,17 @@ export interface User {
   password: string;
 }
 
-const options: ToObjectOptions = {
-  virtuals: true,
+const ToObject: mongoose.ToObjectOptions = {
   versionKey: false,
   transform: (doc, ret) => {
-    delete ret.password;
-    delete ret._id;
-    return { id: ret.id, ...ret };
+    const { _id, password, ...rest } = ret;
+    return { id: _id, ...rest };
   },
 };
 
 const userSchema = new mongoose.Schema<User>(
   {
-    username: { type: String },
+    username: { type: String, default: "" },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
   },
@@ -28,12 +26,8 @@ const userSchema = new mongoose.Schema<User>(
   }
 );
 
-userSchema.virtual("id").get(function () {
-  return this._id.toString();
-});
-
-userSchema.set("toJSON", options);
-userSchema.set("toObject", options);
+userSchema.set("toJSON", ToObject);
+userSchema.set("toObject", ToObject);
 
 const User = mongoose.model<User>("User", userSchema);
 

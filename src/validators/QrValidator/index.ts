@@ -1,6 +1,6 @@
 import Joi from "joi";
-import { DefaultListParams, DefaultListParamsFields } from "..";
 import schema from "~/helpers/schema";
+import { DefaultListParams, DefaultListParamsFields } from "~/validators";
 
 export interface QrListParams extends DefaultListParams {
   isUsed: boolean | null;

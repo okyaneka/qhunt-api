@@ -1,7 +1,6 @@
 import { Router } from "express";
-import joi from "joi";
 import response from "~/helpers/response";
-import AuthMiddleware from "~/middlewares/AuthMiddleware";
+import { AuthMiddleware } from "~/middlewares";
 import { Stage } from "~/models";
 import {
   StageCreatePayload,
