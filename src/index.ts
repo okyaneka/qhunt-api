@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import { ENV, mongodb } from "~/configs";
 import middleware from "~/middlewares";
-import routes from "./routes";
+import routes from "~/routes";
 import response from "~/helpers/response";
 
 const app = express();

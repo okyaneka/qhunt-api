@@ -36,7 +36,7 @@ StageRoute.get("/list", async (req, res) => {
     .sort({ createdAt: -1 });
 
   const totalItems = await Stage.countDocuments({ deletedAt: null });
-  const totalPages = Math.ceil(totalItems / params.page);
+  const totalPages = Math.ceil(totalItems / params.limit);
 
   res.json(
     response.success({
@@ -69,7 +69,6 @@ StageRoute.post("/create", (req, res) => {
     return;
   }
 
-  console.log(value);
   const stage = new Stage(value);
   stage.save();
 
