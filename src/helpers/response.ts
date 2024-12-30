@@ -2,8 +2,8 @@ const success = (data: any = null, message: string = "success") => {
   return {
     code: 200,
     message,
-    data: data || null,
-    error: null,
+    data: data || {},
+    error: {},
   };
 };
 
@@ -11,8 +11,8 @@ const error = (error: any = null, message: string = "", code: number = 400) => {
   return {
     code,
     message,
-    data: null,
-    error: error || null,
+    data: {},
+    error: error || {},
   };
 };
 
