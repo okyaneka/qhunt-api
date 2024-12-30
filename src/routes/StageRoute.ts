@@ -3,28 +3,27 @@ import joi from "joi";
 import response from "~/helpers/response";
 import AuthMiddleware from "~/middlewares/AuthMiddleware";
 import { Stage } from "~/models";
-
-const paramsSchema = joi.object<{
-  page: number;
-  limit: number;
-  search: string;
-}>({
-  page: joi.number().default(1),
-  limit: joi.number().default(10),
-  search: joi.string().default(""),
-});
-
-const stageSchema = joi.object<{ name: string; storyline: string[] }>({
-  name: joi.string().required(),
-  storyline: joi.array().items(joi.string()).default([]),
-});
+import {
+  StageCreatePayload,
+  StageListParamsSchema,
+  StageUpdatePayload,
+} from "~/validators/StageValidator";
 
 const StageRoute = Router();
 
 StageRoute.use(AuthMiddleware);
 
 StageRoute.get("/list", async (req, res) => {
-  const { value: params } = paramsSchema.validate(req.query);
+  const { value: params, error } = StageListParamsSchema.validate(req.query);
+
+  if (error) {
+    const validation = error?.details.reduce((car, cur) => {
+      return { ...car, [cur.context?.key as string]: cur.message };
+    }, {});
+
+    res.status(400).json(response.error({ validation }, "validation error"));
+    return;
+  }
 
   const skip = (params.page - 1) * params.limit;
   const list = await Stage.find({
@@ -56,7 +55,7 @@ StageRoute.get("/list", async (req, res) => {
 });
 
 StageRoute.post("/create", (req, res) => {
-  const { value, error } = stageSchema.validate(req.body, {
+  const { value, error } = StageCreatePayload.validate(req.body, {
     abortEarly: false,
   });
 
@@ -91,7 +90,7 @@ StageRoute.get("/detail/:id", async (req, res) => {
 StageRoute.put("/update/:id", async (req, res) => {
   const id = req.params.id;
 
-  const { value, error } = stageSchema.validate(req.body, {
+  const { value, error } = StageUpdatePayload.validate(req.body, {
     abortEarly: false,
   });
 
