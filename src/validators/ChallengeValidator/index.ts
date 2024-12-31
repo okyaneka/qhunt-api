@@ -1,5 +1,6 @@
 import Joi from "joi";
 import schema from "~/helpers/schema";
+import { ChallengeSetting, ChallengeType } from "~/models/Challenge";
 import { DefaultListParams, DefaultListParamsFields } from "~/validators";
 
 export interface ChallengeListParams extends DefaultListParams {
@@ -10,10 +11,10 @@ export interface ChallengeCreatePayload {
   name: string;
   storyline: string[];
   stageId: string;
+  setting: ChallengeSetting;
 }
 
-export interface ChallengeUpdatePayload
-  extends Omit<ChallengeCreatePayload, "stageId"> {}
+export interface ChallengeSettingPayload extends ChallengeSetting {}
 
 export const ChallengeListParamsSchema = schema.generate<ChallengeListParams>({
   ...DefaultListParamsFields,
@@ -25,10 +26,24 @@ export const ChallengeCreatePayloadSchema =
     name: Joi.string().required(),
     storyline: Joi.array().items(Joi.string()).default([]),
     stageId: Joi.string().required(),
+    setting: schema
+      .generate<ChallengeSettingPayload>({
+        clue: Joi.string().default(""),
+        duration: Joi.number().default(0),
+        type: Joi.string()
+          .valid(...Object.values(ChallengeType))
+          .required(),
+        feedback: schema
+          .generate<ChallengeSettingPayload["feedback"]>({
+            positive: Joi.string().default(""),
+            negative: Joi.string().default(""),
+          })
+          .default({
+            positive: "",
+            negative: "",
+          }),
+      })
+      .required(),
   });
 
-export const ChallengeUpdatePayloadSchema =
-  schema.generate<ChallengeUpdatePayload>({
-    name: Joi.string().required(),
-    storyline: Joi.array().items(Joi.string()).default([]),
-  });
+export const ChallengeUpdatePayloadSchema = ChallengeCreatePayloadSchema;

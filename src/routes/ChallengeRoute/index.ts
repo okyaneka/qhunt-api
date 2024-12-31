@@ -70,8 +70,7 @@ ChallengeRoute.post("/create", async (req, res) => {
   }
 
   const item = new Challenge({
-    name: value.name,
-    storyline: value.storyline,
+    ...value,
     stage: {
       id: stage.id,
       name: stage.name,
