@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
+import { Timestamps } from "..";
 
-export interface User {
+export interface User extends Timestamps {
   email: string;
   username: string;
   password: string;
 }
 
 const ToObject: mongoose.ToObjectOptions = {
-  versionKey: false,
   transform: (doc, ret) => {
     const { _id, password, ...rest } = ret;
     return { id: _id, ...rest };
@@ -21,8 +21,7 @@ const userSchema = new mongoose.Schema<User>(
     password: { type: String, required: true },
   },
   {
-    virtuals: true,
-    versionKey: false,
+    timestamps: true,
   }
 );
 

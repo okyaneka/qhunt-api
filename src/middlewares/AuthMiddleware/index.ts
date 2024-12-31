@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import response from "~/helpers/response";
 import jwt from "jsonwebtoken";
 import { ENV } from "~/configs";
-import { User } from "~/models";
+import User from "~/models/User";
 
 const AuthMiddleware: RequestHandler = async (
   req: Request,
@@ -30,6 +30,7 @@ const AuthMiddleware: RequestHandler = async (
     res.status(401).json(response.error({}, "Invalid auth", 401));
     return;
   }
+  res.locals.user = user;
 
   next();
 };

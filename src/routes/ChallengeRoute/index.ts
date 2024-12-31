@@ -1,12 +1,13 @@
 import response from "~/helpers/response";
 import { Router } from "express";
 import { AuthMiddleware } from "~/middlewares";
-import { Challenge, Stage } from "~/models";
 import {
   ChallengeCreatePayloadSchema,
   ChallengeListParamsSchema,
   ChallengeUpdatePayloadSchema,
 } from "~/validators/ChallengeValidator";
+import Challenge from "~/models/Challenge";
+import Stage from "~/models/Stage";
 
 const ChallengeRoute = Router();
 

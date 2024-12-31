@@ -1,17 +1,13 @@
 import mongoose from "mongoose";
 import { ToObject } from "~/helpers/schema";
-import { IdName, idNameSchema } from "~/models";
+import { IdName, idNameSchema, Timestamps } from "~/models";
 
-export interface Qr {
-  id: string;
+export interface Qr extends Timestamps {
   code: string;
   stage: IdName | null;
   challenge: IdName | null;
   isUsed: boolean;
   accessCount: number | null;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
 }
 
 const qrSchema = new mongoose.Schema<Qr>(
@@ -21,12 +17,9 @@ const qrSchema = new mongoose.Schema<Qr>(
     challenge: { type: idNameSchema, default: null },
     isUsed: { type: Boolean, default: false },
     accessCount: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
     deletedAt: { type: Date, default: null },
   },
   {
-    versionKey: false,
     timestamps: true,
   }
 );

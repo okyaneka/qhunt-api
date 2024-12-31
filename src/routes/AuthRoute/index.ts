@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { User } from "~/models";
 import response from "~/helpers/response";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -9,6 +8,7 @@ import {
   AuthLoginPayloadSchema,
   AuthRegisterPayloadSchema,
 } from "~/validators/AuthValidator";
+import User from "~/models/User";
 
 const AuthRoute = Router();
 

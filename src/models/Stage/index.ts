@@ -1,26 +1,32 @@
 import mongoose from "mongoose";
 import { ToObject } from "~/helpers/schema";
+import { Timestamps } from "..";
 
-export interface Stage {
-  id: string;
+enum StageStatus {
+  Draft = "draft",
+  Publish = "publish",
+}
+
+export interface Stage extends Timestamps {
   name: string;
   storyline: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
+  status: StageStatus;
+  settings: {};
 }
 
 const stageSchema = new mongoose.Schema<Stage>(
   {
     name: { type: String, required: true },
     storyline: { type: [String], default: [] },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    status: {
+      type: String,
+      enum: Object.values(StageStatus),
+      default: StageStatus.Draft,
+    },
     deletedAt: { type: Date, default: null },
   },
   {
     timestamps: true,
-    versionKey: false,
   }
 );
 
