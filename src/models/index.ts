@@ -1,10 +1,5 @@
 import { Schema } from "mongoose";
 
-export { default as User } from "./User";
-export { default as Stage } from "./Stage";
-export { default as Challenge } from "./Challenge";
-export { default as Qr } from "./Qr";
-
 export interface Timestamps {
   createdAt: Date;
   updatedAt: Date;

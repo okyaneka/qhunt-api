@@ -6,8 +6,8 @@ import {
   QrGeneratePayloadSchema,
   QrListParamsSchema,
 } from "~/validators/QrValidator";
-import { Qr } from "~/models";
 import { AuthMiddleware } from "~/middlewares";
+import Qr from "~/models/Qr";
 
 const QrRoute = Router();
 

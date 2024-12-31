@@ -1,7 +1,7 @@
 import { Router } from "express";
 import response from "~/helpers/response";
 import { AuthMiddleware } from "~/middlewares";
-import { Stage } from "~/models";
+import Stage from "~/models/Stage";
 import {
   StageCreatePayload,
   StageListParamsSchema,
@@ -38,8 +38,8 @@ StageRoute.get("/list", async (req, res) => {
 
   res.json(
     response.success({
-      list: list.map((stage) =>
-        stage.toJSON({
+      list: list.map((item) =>
+        item.toJSON({
           transform: (doc, ret) => {
             const { _id, storyline, deletedAt, ...etc } = ret;
             return { id: _id, ...etc };
