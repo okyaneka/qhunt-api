@@ -1,31 +1,14 @@
 import { model, Schema } from "mongoose";
-import { IdName, idNameSchema, Timestamps } from "~/models";
 import { ToObject } from "~/helpers/schema";
+import {
+  Challenge,
+  ChallengeFeedback,
+  ChallengeSetting,
+  ChallengeType,
+} from "./types";
+import { idNameSchema } from "..";
 
-export enum ChallengeType {
-  Trivia = "trivia",
-}
-
-export interface ChallengeFeedback {
-  positive: string;
-  negative: string;
-}
-
-export interface ChallengeSetting {
-  type: ChallengeType;
-  duration: number;
-  clue: string;
-  feedback: ChallengeFeedback;
-}
-
-export interface Challenge extends Timestamps {
-  name: string;
-  storyline: string[];
-  stage: IdName;
-  setting: ChallengeSetting;
-}
-
-const ChallengeFeedbackSchema = new Schema<ChallengeFeedback>(
+export const ChallengeFeedbackSchema = new Schema<ChallengeFeedback>(
   {
     positive: { type: String, default: "" },
     negative: { type: String, default: "" },
@@ -58,5 +41,7 @@ ChallengeSchema.set("toJSON", ToObject);
 ChallengeSchema.set("toObject", ToObject);
 
 const Challenge = model<Challenge>("Challenge", ChallengeSchema);
+
+export * from "./types";
 
 export default Challenge;
