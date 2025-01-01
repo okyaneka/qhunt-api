@@ -16,7 +16,6 @@ const ErrorMiddleware: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("P");
   const timestamp = new Date().toISOString();
   const method = req.method;
   const path = req.path;

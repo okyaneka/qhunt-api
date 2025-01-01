@@ -1,14 +1,13 @@
 import response from "~/helpers/response";
 import { Router } from "express";
 import { AuthMiddleware } from "~/middlewares";
-import {
-  ChallengeCreatePayloadSchema,
-  ChallengeListParamsSchema,
-  ChallengeUpdatePayloadSchema,
-} from "~/validators/ChallengeValidator";
-import Challenge, { ChallengeType } from "~/models/Challenge";
-import Stage from "~/models/Stage";
+import ChallengeService from "~/services/ChallengeService";
 import TriviaService from "~/services/TriviaService";
+import { ChallengeType } from "~/models/Challenge";
+import {
+  ChallengeListParamsValidator,
+  ChallengePayloadValidator,
+} from "~/validators/ChallengeValidator";
 import { TriviaItemsPayloadValidator } from "~/validators/TriviaValidator";
 
 const ChallengeRoute = Router();
@@ -26,7 +25,7 @@ const path = {
 } as const;
 
 ChallengeRoute.get(path.list, async (req, res) => {
-  const { value: params, error } = ChallengeListParamsSchema.validate(
+  const { value: params, error } = ChallengeListParamsValidator.validate(
     req.query
   );
 
@@ -35,29 +34,13 @@ ChallengeRoute.get(path.list, async (req, res) => {
     return;
   }
 
-  const skip = (params.page - 1) * params.limit;
-  const filter: any = { deletedAt: null };
-  if (params.stageId) filter["stage.id"] = params.stageId;
-  const list = await Challenge.find(filter)
-    .skip(skip)
-    .limit(params.limit)
-    .sort({ createdAt: -1 });
+  const data = await ChallengeService.list(params);
 
-  const totalItems = await Challenge.countDocuments({ deletedAt: null });
-  const totalPages = Math.ceil(totalItems / params.limit);
-
-  res.json(
-    response.success({
-      list: list.map((item) => item.toJSON()),
-      page: params.page,
-      totalItems,
-      totalPages,
-    })
-  );
+  res.json(response.success(data));
 });
 
 ChallengeRoute.post(path.create, async (req, res) => {
-  const { value, error } = ChallengeCreatePayloadSchema.validate(req.body, {
+  const { value, error } = ChallengePayloadValidator.validate(req.body, {
     abortEarly: false,
   });
 
@@ -66,21 +49,12 @@ ChallengeRoute.post(path.create, async (req, res) => {
     return;
   }
 
-  const stage = await Stage.findOne({ _id: value.stageId, deletedAt: null });
+  const item = await ChallengeService.create(value);
 
-  if (!stage) {
+  if (!item) {
     res.status(400).json(response.error("stage not found"));
     return;
   }
-
-  const item = new Challenge({
-    ...value,
-    stage: {
-      id: stage.id,
-      name: stage.name,
-    },
-  });
-  await item.save();
 
   res.json(response.success(item));
 });
@@ -88,7 +62,7 @@ ChallengeRoute.post(path.create, async (req, res) => {
 ChallengeRoute.get(path.detail, async (req, res) => {
   const id = req.params.id;
 
-  const item = await Challenge.findOne({ _id: id, deletedAt: null });
+  const item = await ChallengeService.detail(id);
   if (!item) {
     res.status(400).json(response.error("item not found"));
     return;
@@ -100,7 +74,7 @@ ChallengeRoute.get(path.detail, async (req, res) => {
 ChallengeRoute.get(path.detailContent, async (req, res) => {
   const id = req.params.id;
 
-  const item = await Challenge.findOne({ _id: id, deletedAt: null });
+  const item = await ChallengeService.detail(id);
   if (!item) {
     res.status(400).json(response.error("item not found"));
     return;
@@ -118,7 +92,7 @@ ChallengeRoute.get(path.detailContent, async (req, res) => {
 });
 
 ChallengeRoute.put(path.update, async (req, res) => {
-  const { value, error } = ChallengeUpdatePayloadSchema.validate(req.body);
+  const { value, error } = ChallengePayloadValidator.validate(req.body);
 
   if (error) {
     res.status(400).json(response.errorValidation(error));
@@ -127,11 +101,7 @@ ChallengeRoute.put(path.update, async (req, res) => {
 
   const id = req.params.id;
 
-  const item = await Challenge.findOneAndUpdate(
-    { _id: id, deletedAt: null },
-    { $set: value },
-    { new: true }
-  );
+  const item = await ChallengeService.update(id, value);
   if (!item) {
     res.status(400).json(response.error("item not found"));
     return;
@@ -143,7 +113,7 @@ ChallengeRoute.put(path.update, async (req, res) => {
 ChallengeRoute.put(path.updateContent, async (req, res) => {
   const id = req.params.id;
 
-  const item = await Challenge.findOne({ _id: id, deletedAt: null });
+  const item = await ChallengeService.detail(id);
   if (!item) {
     res.status(400).json(response.error("item not found"));
     return;
@@ -172,11 +142,7 @@ ChallengeRoute.put(path.updateContent, async (req, res) => {
 ChallengeRoute.delete(path.delete, async (req, res) => {
   const id = req.params.id;
 
-  const item = await Challenge.updateOne(
-    { _id: id, deletedAt: null },
-    { $set: { deletedAt: new Date() } }
-  ).catch(() => {});
-
+  const item = await ChallengeService.delete(id);
   if (!item || !item.matchedCount) {
     res.status(400).json(response.error({}, "item not found"));
     return;
