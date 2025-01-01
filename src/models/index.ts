@@ -16,5 +16,5 @@ export const idNameSchema = new Schema<IdName>(
     id: { type: String, required: true },
     name: { type: String, required: true },
   },
-  { _id: false }
+  { _id: false, versionKey: false }
 );

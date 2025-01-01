@@ -1,34 +1,39 @@
 import Joi from "joi";
 import schema from "~/helpers/schema";
+import {
+  ChallengeFeedback,
+  ChallengeListParams,
+  ChallengePayload,
+  ChallengeSetting,
+  ChallengeType,
+} from "~/models/Challenge";
 import { DefaultListParams, DefaultListParamsFields } from "~/validators";
 
-export interface ChallengeListParams extends DefaultListParams {
-  stageId: string;
-}
+export const ChallengeListParamsValidator =
+  schema.generate<ChallengeListParams>({
+    ...DefaultListParamsFields,
+    stageId: Joi.string().allow("").default(""),
+  });
 
-export interface ChallengeCreatePayload {
-  name: string;
-  storyline: string[];
-  stageId: string;
-}
+export const ChallengeFeedbackValidator = schema
+  .generate<ChallengeFeedback>({
+    positive: schema.string({ allow: "", defaultValue: "" }),
+    negative: schema.string({ allow: "", defaultValue: "" }),
+  })
+  .default({ positive: "", negative: "" });
 
-export interface ChallengeUpdatePayload
-  extends Omit<ChallengeCreatePayload, "stageId"> {}
-
-export const ChallengeListParamsSchema = schema.generate<ChallengeListParams>({
-  ...DefaultListParamsFields,
-  stageId: Joi.string().allow("").default(""),
+export const ChallengePayloadValidator = schema.generate<ChallengePayload>({
+  name: Joi.string().required(),
+  storyline: Joi.array().items(Joi.string()).default([]),
+  stageId: Joi.string().required(),
+  setting: schema
+    .generate<ChallengeSetting>({
+      clue: Joi.string().default(""),
+      duration: Joi.number().default(0),
+      type: Joi.string()
+        .valid(...Object.values(ChallengeType))
+        .required(),
+      feedback: ChallengeFeedbackValidator,
+    })
+    .required(),
 });
-
-export const ChallengeCreatePayloadSchema =
-  schema.generate<ChallengeCreatePayload>({
-    name: Joi.string().required(),
-    storyline: Joi.array().items(Joi.string()).default([]),
-    stageId: Joi.string().required(),
-  });
-
-export const ChallengeUpdatePayloadSchema =
-  schema.generate<ChallengeUpdatePayload>({
-    name: Joi.string().required(),
-    storyline: Joi.array().items(Joi.string()).default([]),
-  });
