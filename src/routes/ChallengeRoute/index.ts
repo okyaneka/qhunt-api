@@ -6,24 +6,32 @@ import {
   ChallengeListParamsSchema,
   ChallengeUpdatePayloadSchema,
 } from "~/validators/ChallengeValidator";
-import Challenge from "~/models/Challenge";
+import Challenge, { ChallengeType } from "~/models/Challenge";
 import Stage from "~/models/Stage";
+import TriviaService from "~/services/TriviaService";
+import { TriviaItemsPayloadValidator } from "~/validators/TriviaValidator";
 
 const ChallengeRoute = Router();
 
 ChallengeRoute.use(AuthMiddleware);
 
-ChallengeRoute.get("/list", async (req, res) => {
+const path = {
+  list: "/list",
+  create: "/create",
+  detail: "/detail/:id",
+  detailContent: "/detail/:id/content",
+  update: "/update/:id",
+  updateContent: "/update/:id/content",
+  delete: "/delete/:id",
+} as const;
+
+ChallengeRoute.get(path.list, async (req, res) => {
   const { value: params, error } = ChallengeListParamsSchema.validate(
     req.query
   );
 
   if (error) {
-    const validation = error?.details.reduce((car, cur) => {
-      return { ...car, [cur.context?.key as string]: cur.message };
-    }, {});
-
-    res.status(400).json(response.error({ validation }, "validation error"));
+    res.status(400).json(response.errorValidation(error));
     return;
   }
 
@@ -48,17 +56,13 @@ ChallengeRoute.get("/list", async (req, res) => {
   );
 });
 
-ChallengeRoute.post("/create", async (req, res) => {
+ChallengeRoute.post(path.create, async (req, res) => {
   const { value, error } = ChallengeCreatePayloadSchema.validate(req.body, {
     abortEarly: false,
   });
 
   if (error) {
-    const validation = error?.details.reduce((car, cur) => {
-      return { ...car, [cur.context?.key as string]: cur.message };
-    }, {});
-
-    res.status(400).json(response.error({ validation }, "validation error"));
+    res.status(400).json(response.errorValidation(error));
     return;
   }
 
@@ -81,7 +85,7 @@ ChallengeRoute.post("/create", async (req, res) => {
   res.json(response.success(item));
 });
 
-ChallengeRoute.get("/detail/:id", async (req, res) => {
+ChallengeRoute.get(path.detail, async (req, res) => {
   const id = req.params.id;
 
   const item = await Challenge.findOne({ _id: id, deletedAt: null });
@@ -93,15 +97,31 @@ ChallengeRoute.get("/detail/:id", async (req, res) => {
   res.json(response.success(item.toJSON()));
 });
 
-ChallengeRoute.put("/update/:id", async (req, res) => {
+ChallengeRoute.get(path.detailContent, async (req, res) => {
+  const id = req.params.id;
+
+  const item = await Challenge.findOne({ _id: id, deletedAt: null });
+  if (!item) {
+    res.status(400).json(response.error("item not found"));
+    return;
+  }
+
+  switch (item.setting.type) {
+    case ChallengeType.Trivia:
+      const triviaContent = await TriviaService.content(item);
+      res.json(response.success(triviaContent));
+      return;
+    default:
+      res.json();
+      return;
+  }
+});
+
+ChallengeRoute.put(path.update, async (req, res) => {
   const { value, error } = ChallengeUpdatePayloadSchema.validate(req.body);
 
   if (error) {
-    const validation = error?.details.reduce((car, cur) => {
-      return { ...car, [cur.context?.key as string]: cur.message };
-    }, {});
-
-    res.status(400).json(response.error({ validation }, "validation error"));
+    res.status(400).json(response.errorValidation(error));
     return;
   }
 
@@ -120,7 +140,36 @@ ChallengeRoute.put("/update/:id", async (req, res) => {
   res.json(response.success(item.toJSON()));
 });
 
-ChallengeRoute.delete("/delete/:id", async (req, res) => {
+ChallengeRoute.put(path.updateContent, async (req, res) => {
+  const id = req.params.id;
+
+  const item = await Challenge.findOne({ _id: id, deletedAt: null });
+  if (!item) {
+    res.status(400).json(response.error("item not found"));
+    return;
+  }
+
+  switch (item.setting.type) {
+    case ChallengeType.Trivia:
+      const { value: triviaValue, error: triviaError } =
+        TriviaItemsPayloadValidator.validate(req.body, { abortEarly: false });
+
+      if (triviaError) {
+        res.status(400).json(response.errorValidation(triviaError));
+        return;
+      }
+
+      await TriviaService.sync(item, triviaValue.items);
+      break;
+
+    default:
+      break;
+  }
+
+  res.json(response.success("content synced"));
+});
+
+ChallengeRoute.delete(path.delete, async (req, res) => {
   const id = req.params.id;
 
   const item = await Challenge.updateOne(
