@@ -11,16 +11,19 @@ mongodb();
 
 app.use(express.json());
 
+app.use(middleware.LogMiddleware);
+
+routes(app);
+
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.json(response.success("QHunt API"));
 });
 
-routes(app);
-middleware(app);
-
 app.use((req, res, next) => {
   res.status(404).send(response.error(null, "Route not found", 404));
 });
+
+app.use(middleware.ErrorMiddleware);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
