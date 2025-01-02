@@ -1,22 +1,31 @@
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
 import { ToObject } from "~/helpers/schema";
-import { IdName, idNameSchema, Timestamps } from "~/models";
+import { Qr, QrContent, QrContentType, QrLocation, QrStatus } from "./types";
 
-export interface Qr extends Timestamps {
-  code: string;
-  stage: IdName | null;
-  challenge: IdName | null;
-  isUsed: boolean;
-  accessCount: number | null;
-}
-
-const qrSchema = new mongoose.Schema<Qr>(
+const QrContentSchema = new Schema<QrContent>(
   {
-    code: { type: String, default: "" },
-    stage: { type: idNameSchema, default: null },
-    challenge: { type: idNameSchema, default: null },
-    isUsed: { type: Boolean, default: false },
-    accessCount: { type: Number, default: 0 },
+    type: { type: String, enum: Object.values(QrContentType), required: true },
+    refId: { type: String, required: true },
+  },
+  { _id: false, versionKey: false }
+);
+
+const QrLocationSchema = new Schema<QrLocation>(
+  {
+    label: { type: String, required: true },
+    longitude: { type: Number, required: true },
+    latitude: { type: Number, required: true },
+  },
+  { _id: false, versionKey: false }
+);
+
+const QrSchema = new Schema<Qr>(
+  {
+    code: { type: String, required: true, unique: true },
+    status: { type: String, enum: Object.values(QrStatus), required: true },
+    content: { type: QrContentSchema, default: null },
+    location: { type: QrLocationSchema, default: null },
+    accessCount: { type: Number, default: null },
     deletedAt: { type: Date, default: null },
   },
   {
@@ -24,9 +33,11 @@ const qrSchema = new mongoose.Schema<Qr>(
   }
 );
 
-qrSchema.set("toObject", ToObject);
-qrSchema.set("toJSON", ToObject);
+QrSchema.set("toObject", ToObject);
+QrSchema.set("toJSON", ToObject);
 
-export const Qr = mongoose.model<Qr>("Qr", qrSchema);
+const Qr = model<Qr>("Qr", QrSchema);
+
+export * from "./types";
 
 export default Qr;

@@ -1,28 +1,51 @@
 import Joi from "joi";
 import schema from "~/helpers/schema";
-import { DefaultListParams, DefaultListParamsFields } from "~/validators";
+import {
+  QrContent,
+  QrContentType,
+  QrDeleteBulkPayload,
+  QrGeneratePayload,
+  QrListQuery,
+  QrLocation,
+  QrStatus,
+  QrUpdatePayload,
+} from "~/models/Qr";
+import { DefaultListParamsFields } from "~/validators";
 
-export interface QrListParams extends DefaultListParams {
-  isUsed: boolean | null;
-}
-
-export interface QrGeneratePayload {
-  amount: number;
-}
-
-export interface QrDeleteBulkPayload {
-  ids: string[];
-}
-
-export const QrListParamsSchema = schema.generate<QrListParams>({
+export const QrListQueryValidator = schema.generate<QrListQuery>({
   ...DefaultListParamsFields,
-  isUsed: Joi.boolean().default(null),
+  status: schema
+    .string()
+    .valid(...Object.values(QrStatus))
+    .default(null),
 });
 
-export const QrGeneratePayloadSchema = schema.generate<QrGeneratePayload>({
-  amount: Joi.number().required(),
+export const QrGeneratePayloadValidator = schema.generate<QrGeneratePayload>({
+  amount: schema.number({ required: true }),
 });
 
-export const QrDeleteBulkPayloadSchema = schema.generate<QrDeleteBulkPayload>({
-  ids: Joi.array().items(Joi.string()).required(),
+const QrContentValidator = schema.generate<QrContent>({
+  refId: schema.string({ required: true }),
+  type: schema
+    .string({ required: true })
+    .valid(...Object.values(QrContentType)),
 });
+
+const QrLocationValidator = schema.generate<QrLocation>({
+  label: schema.string({ required: true }),
+  longitude: schema.number({ required: true }),
+  latitude: schema.number({ required: true }),
+});
+const p = Joi.string().allow(null);
+const q = schema.string({ defaultValue: null, allow: null });
+
+export const QrUpdatePayloadValidator = schema.generate<QrUpdatePayload>({
+  status: schema.string({ required: true }).valid(...Object.values(QrStatus)),
+  content: QrContentValidator.allow(null).default(null),
+  location: QrLocationValidator.allow(null).default(null),
+});
+
+export const QrDeleteBulkPayloadValidator =
+  schema.generate<QrDeleteBulkPayload>({
+    ids: schema.array(Joi.string(), { required: true }),
+  });
