@@ -3,7 +3,7 @@ import path from "path";
 import { NextFunction, ErrorRequestHandler, Response, Request } from "express";
 import response from "~/helpers/response";
 
-const logPath = path.join(__dirname, "../../logs/error.log");
+const logPath = path.join(__dirname, "../../../logs/error.log");
 
 const logsDir = path.dirname(logPath);
 if (!fs.existsSync(logsDir)) {

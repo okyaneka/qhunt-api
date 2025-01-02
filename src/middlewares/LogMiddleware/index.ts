@@ -2,7 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import path from "path";
 import fs from "fs";
 
-const logPath = path.join(__dirname, "../../logs/access.log");
+const logPath = path.join(__dirname, "../../../logs/access.log");
 
 const logsDir = path.dirname(logPath);
 if (!fs.existsSync(logsDir)) {
@@ -18,9 +18,9 @@ const LogMiddleware: RequestHandler = (
   const method = req.method;
   const path = req.path;
 
-  const logMessage = `[${timestamp}] ${method}: ${path}\n`;
+  const logMessage = `[${timestamp}] ${method}: ${path}`;
   console.log(logMessage);
-  fs.appendFile(logPath, logMessage, (err) => {
+  fs.appendFile(logPath, logMessage + "\n", (err) => {
     if (err) {
       console.error("Failed to write log to file", err);
     }
