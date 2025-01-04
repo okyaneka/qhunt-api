@@ -28,9 +28,10 @@ export interface ChallengePayload {
   setting: ChallengeSetting;
 }
 
-export interface Challenge
-  extends Omit<ChallengePayload, "stageId">,
-    Timestamps {
+export interface Challenge extends Timestamps {
   id: string;
+  name: string;
+  storyline: string[];
   stage: IdName;
+  setting: ChallengeSetting;
 }

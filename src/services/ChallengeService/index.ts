@@ -2,7 +2,7 @@ import Challenge, {
   ChallengeListParams,
   ChallengePayload,
 } from "~/models/Challenge";
-import Stage from "~/models/Stage";
+import StageService from "../StageService";
 
 export const list = async (params: ChallengeListParams) => {
   const skip = (params.page - 1) * params.limit;
@@ -13,11 +13,11 @@ export const list = async (params: ChallengeListParams) => {
     .limit(params.limit)
     .sort({ createdAt: -1 });
 
-  const totalItems = await Challenge.countDocuments({ deletedAt: null });
+  const totalItems = await Challenge.countDocuments(filter);
   const totalPages = Math.ceil(totalItems / params.limit);
 
   return {
-    list: list.map((item) => item.toJSON()),
+    list: list.map((item) => item.toObject()),
     page: params.page,
     totalItems,
     totalPages,
@@ -25,12 +25,7 @@ export const list = async (params: ChallengeListParams) => {
 };
 
 export const create = async (payload: ChallengePayload) => {
-  const stage = await Stage.findOne({
-    _id: payload.stageId,
-    deletedAt: null,
-  }).catch(() => {});
-
-  if (!stage) return;
+  const stage = await StageService.detail(payload.stageId);
 
   const item = await Challenge.create({
     ...payload,
@@ -40,26 +35,46 @@ export const create = async (payload: ChallengePayload) => {
     },
   });
 
-  return item;
+  return item.toObject();
 };
 
 export const detail = async (id: string) => {
-  return Challenge.findOne({ _id: id, deletedAt: null }).catch(() => {});
+  const item = await Challenge.findOne({ _id: id, deletedAt: null });
+  if (!item) throw new Error("item not found");
+  return item.toObject();
 };
 
 export const update = async (id: string, payload: ChallengePayload) => {
-  return Challenge.findOneAndUpdate(
+  const stage = await StageService.detail(payload.stageId);
+
+  const item = await Challenge.findOneAndUpdate(
     { _id: id, deletedAt: null },
-    { $set: payload },
+    {
+      $set: {
+        ...payload,
+        stage: {
+          id: stage.id,
+          name: stage.name,
+        },
+      },
+    },
     { new: true }
-  ).catch(() => {});
+  );
+
+  if (!item) throw new Error("item not found");
+
+  return item.toObject();
 };
 
 export const _delete = async (id: string) => {
-  return Challenge.updateOne(
+  const item = await Challenge.findOneAndUpdate(
     { _id: id, deletedAt: null },
-    { $set: { deletedAt: new Date() } }
-  ).catch(() => {});
+    { $set: { deletedAt: Date.now() } },
+    { new: true }
+  );
+  if (!item) throw new Error("item not found");
+
+  return item.toObject();
 };
 
 const ChallengeService = { list, create, detail, update, delete: _delete };
