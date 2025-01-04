@@ -32,7 +32,7 @@ const QrContentValidator = schema.generate<QrContent>({
 });
 
 const QrLocationValidator = schema.generate<QrLocation>({
-  label: schema.string({ required: true }),
+  label: schema.string({ required: true, allow: "" }),
   longitude: schema.number({ required: true }),
   latitude: schema.number({ required: true }),
 });
