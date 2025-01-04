@@ -25,13 +25,13 @@ const AuthMiddleware: RequestHandler = async (
   });
 
   const { id } = decode(token) as { id: string };
-  const user = await UserService.detail(id);
+  const user = await UserService.detail(id).catch((err: Error) => err);
   if (!user || user instanceof Error) {
     res.status(401).json(response.error({}, "invalid auth", 401));
     return;
   }
 
-  res.locals.user = { id: user._id, role: user.role };
+  res.locals.user = { id: user.id, role: user.role };
 
   next();
 };

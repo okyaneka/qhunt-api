@@ -16,6 +16,7 @@ export interface UserPayload {
 }
 
 export interface User extends Timestamps {
+  id: string;
   name: string;
   email: string;
   password: string;
