@@ -19,7 +19,7 @@ const createValidator = <T = unknown>(
 };
 
 export const string = (option?: ValidatorOption<string | null>) =>
-  createValidator(Joi.string(), option) as Joi.StringSchema;
+  createValidator(Joi.string().trim(), option) as Joi.StringSchema;
 
 export const number = (option?: ValidatorOption<number | null>) =>
   createValidator(Joi.number(), option) as Joi.NumberSchema;
