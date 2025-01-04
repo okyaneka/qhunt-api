@@ -11,7 +11,6 @@ import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 
 const path = {
-  public: "/public/:code",
   list: "/list",
   generate: "/generate",
   detail: "/detail/:id",
@@ -21,19 +20,6 @@ const path = {
 } as const;
 
 const QrRoute = Router();
-
-QrRoute.get(path.public, async (req, res) => {
-  const code = req.params.code;
-
-  const item = await QrService.detailPublic(code);
-
-  if (!item) {
-    res.status(400).json(response.error({}, "item not found"));
-    return;
-  }
-
-  res.json(response.success(item));
-});
 
 QrRoute.use(AuthMiddleware);
 

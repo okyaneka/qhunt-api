@@ -4,6 +4,7 @@ import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 import { UserPayloadValidator } from "~/validators/UserValidator";
 import UserService from "~/services/UserService";
+import cookies from "~/configs/cookies";
 
 const AuthRoute = Router();
 
@@ -12,8 +13,8 @@ AuthRoute.get("/profile", AuthMiddleware, async (req, res) => {
 
   const user = await UserService.detail(auth?.id as string).catch((err) => err);
 
-  if (!user || user instanceof Error) {
-    res.status(401).json(response.error({}, "unauthorized", 401));
+  if (user instanceof Error) {
+    res.status(401).json(response.error({}, user.message, 401));
     return;
   }
 
@@ -33,7 +34,13 @@ AuthRoute.post(
       return;
     }
 
-    res.json(response.success(data));
+    const { TID, ...user } = data;
+
+    res.cookie(cookies.TID, TID, {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3),
+    });
+
+    res.json(response.success(user));
   }
 );
 

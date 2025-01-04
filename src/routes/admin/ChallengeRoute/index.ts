@@ -1,6 +1,6 @@
 import response from "~/helpers/response";
 import { Router } from "express";
-import { AuthMiddleware } from "~/middlewares";
+import { AuthMiddleware, ValidationMiddleware } from "~/middlewares";
 import ChallengeService from "~/services/ChallengeService";
 import TriviaService from "~/services/TriviaService";
 import { ChallengeType } from "~/models/Challenge";
@@ -24,59 +24,55 @@ const path = {
   delete: "/delete/:id",
 } as const;
 
-ChallengeRoute.get(path.list, async (req, res) => {
-  const { value: params, error } = ChallengeListParamsValidator.validate(
-    req.query
-  );
+ChallengeRoute.get(
+  path.list,
+  ValidationMiddleware({ query: ChallengeListParamsValidator }),
+  async (req, res) => {
+    const { value: params } = ChallengeListParamsValidator.validate(req.query);
 
-  if (error) {
-    res.status(400).json(response.errorValidation(error));
-    return;
+    const data = await ChallengeService.list(params);
+
+    res.json(response.success(data));
   }
+);
 
-  const data = await ChallengeService.list(params);
+ChallengeRoute.post(
+  path.create,
+  ValidationMiddleware({ body: ChallengePayloadValidator }),
+  async (req, res) => {
+    const { value } = ChallengePayloadValidator.validate(req.body);
 
-  res.json(response.success(data));
-});
+    const item = await ChallengeService.create(value).catch(
+      (err: Error) => err
+    );
 
-ChallengeRoute.post(path.create, async (req, res) => {
-  const { value, error } = ChallengePayloadValidator.validate(req.body, {
-    abortEarly: false,
-  });
+    if (item instanceof Error) {
+      res.status(400).json(response.error(item.message));
+      return;
+    }
 
-  if (error) {
-    res.status(400).json(response.errorValidation(error));
-    return;
+    res.json(response.success(item));
   }
+);
 
-  const item = await ChallengeService.create(value);
+ChallengeRoute.get(path.detail, async (req, res) => {
+  const id = req.params.id;
 
-  if (!item) {
-    res.status(400).json(response.error("stage not found"));
+  const item = await ChallengeService.detail(id).catch((err: Error) => err);
+  if (item instanceof Error) {
+    res.status(400).json(response.error(item.message));
     return;
   }
 
   res.json(response.success(item));
 });
 
-ChallengeRoute.get(path.detail, async (req, res) => {
-  const id = req.params.id;
-
-  const item = await ChallengeService.detail(id);
-  if (!item) {
-    res.status(400).json(response.error("item not found"));
-    return;
-  }
-
-  res.json(response.success(item.toJSON()));
-});
-
 ChallengeRoute.get(path.detailContent, async (req, res) => {
   const id = req.params.id;
 
-  const item = await ChallengeService.detail(id);
-  if (!item) {
-    res.status(400).json(response.error("item not found"));
+  const item = await ChallengeService.detail(id).catch((err: Error) => err);
+  if (item instanceof Error) {
+    res.status(400).json(response.error(item.message));
     return;
   }
 
@@ -91,24 +87,26 @@ ChallengeRoute.get(path.detailContent, async (req, res) => {
   }
 });
 
-ChallengeRoute.put(path.update, async (req, res) => {
-  const { value, error } = ChallengePayloadValidator.validate(req.body);
+ChallengeRoute.put(
+  path.update,
+  ValidationMiddleware({ body: ChallengePayloadValidator }),
+  async (req, res) => {
+    const { value } = ChallengePayloadValidator.validate(req.body);
 
-  if (error) {
-    res.status(400).json(response.errorValidation(error));
-    return;
+    const id = req.params.id;
+
+    const item = await ChallengeService.update(id, value).catch(
+      (err: Error) => err
+    );
+
+    if (item instanceof Error) {
+      res.status(400).json(response.error(item.message));
+      return;
+    }
+
+    res.json(response.success(item));
   }
-
-  const id = req.params.id;
-
-  const item = await ChallengeService.update(id, value);
-  if (!item) {
-    res.status(400).json(response.error("item not found"));
-    return;
-  }
-
-  res.json(response.success(item.toJSON()));
-});
+);
 
 ChallengeRoute.put(path.updateContent, async (req, res) => {
   const id = req.params.id;
@@ -142,9 +140,9 @@ ChallengeRoute.put(path.updateContent, async (req, res) => {
 ChallengeRoute.delete(path.delete, async (req, res) => {
   const id = req.params.id;
 
-  const item = await ChallengeService.delete(id);
-  if (!item || !item.matchedCount) {
-    res.status(400).json(response.error({}, "item not found"));
+  const item = await ChallengeService.delete(id).catch((err: Error) => err);
+  if (item instanceof Error) {
+    res.status(400).json(response.error({}, item.message));
     return;
   }
 

@@ -43,13 +43,17 @@ export const login = async (payload: UserPayload) => {
 
   if (!isPasswordValid) throw new Error("invalid password");
 
+  const userPublic = await UserPublic.findOne({ "user.id": user._id });
+
+  if (!userPublic) throw new Error("invalid user");
+
   const token = sign({ id: user._id }, ENV.JWT_SECRET, {
     expiresIn: 30 * 24 * 60 * 60,
   });
 
   const { _id: id, name } = user;
 
-  return { id, name, email, token };
+  return { id, name, email, TID: userPublic?.code, token };
 };
 
 export const profile = async (bearer: string) => {};
@@ -59,9 +63,15 @@ export const list = async (params: UserListQuery) => {};
 export const create = async (payload: UserPayload) => {};
 
 export const detail = async (id: string) => {
-  return await User.findOne({ _id: id, deletedAt: null }).catch(() => {
-    throw new Error("user not found");
-  });
+  const user = await User.findOne({ _id: id, deletedAt: null }).catch(() => {});
+
+  if (!user) throw new Error("user not found");
+
+  const meta = await UserPublic.findOne({ "user.id": user._id }).catch(
+    () => {}
+  );
+
+  return { ...user.toObject(), meta: meta?.toObject() };
 };
 
 export const update = async (id: string, payload: UserPayload) => {};

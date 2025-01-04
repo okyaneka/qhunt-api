@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res) => {
-  res.status(404).send(response.error(null, "Route not found", 404));
+  res.status(404).send(response.error(null, "route not found", 404));
 });
 
 app.use(ErrorMiddleware);
