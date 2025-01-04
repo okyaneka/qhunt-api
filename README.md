@@ -1,4 +1,4 @@
-# MY EXPRESS
+# QHUNT API
 
 ## Run
 
@@ -7,6 +7,10 @@
 pnpm install
 
 # run
+# dont forget to config the hosts
+docker compose up -d
+
+
 pnpm dev
 
 # build
@@ -20,4 +24,5 @@ pnpm start
 
 ```bash
 docker build -t qhunt .
+docker tag qhunt:latest <repository>/<image_name>:<tag>
 ```
