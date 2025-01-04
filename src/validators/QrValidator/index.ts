@@ -17,7 +17,7 @@ export const QrListQueryValidator = schema.generate<QrListQuery>({
   status: schema
     .string()
     .valid(...Object.values(QrStatus))
-    .default(null),
+    .default(QrStatus.Draft),
 });
 
 export const QrGeneratePayloadValidator = schema.generate<QrGeneratePayload>({
@@ -36,8 +36,6 @@ const QrLocationValidator = schema.generate<QrLocation>({
   longitude: schema.number({ required: true }),
   latitude: schema.number({ required: true }),
 });
-const p = Joi.string().allow(null);
-const q = schema.string({ defaultValue: null, allow: null });
 
 export const QrUpdatePayloadValidator = schema.generate<QrUpdatePayload>({
   status: schema.string({ required: true }).valid(...Object.values(QrStatus)),

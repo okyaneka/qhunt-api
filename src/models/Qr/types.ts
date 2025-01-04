@@ -44,10 +44,10 @@ export interface QrDeleteBulkPayload {
   ids: string[];
 }
 
-export interface Qr extends QrPayload, Timestamps {
+export interface Qr extends Timestamps {
   id: string;
-  stage: IdName | null;
-  challenge: IdName | null;
+  code: string;
+  status: QrStatus;
   content: QrContent | null;
   location: QrLocation | null;
   accessCount: number | null;
