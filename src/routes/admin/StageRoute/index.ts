@@ -7,14 +7,20 @@ import {
   StageListParamsValidator,
 } from "~/validators/StageValidator";
 
-const path = { list: "/list" } as const;
+const path = {
+  list: "/list",
+  create: "/create",
+  detail: "/detail/:id",
+  update: "/update/:id",
+  delete: "/delete/:id",
+} as const;
 
 const StageRoute = Router();
 
 StageRoute.use(AuthMiddleware);
 
 StageRoute.get(
-  "/list",
+  path.list,
   ValidationMiddleware({ query: StageListParamsValidator }),
   async (req, res) => {
     const { value: params } = StageListParamsValidator.validate(req.query);
@@ -26,7 +32,7 @@ StageRoute.get(
 );
 
 StageRoute.post(
-  "/create",
+  path.create,
   ValidationMiddleware({ body: StagePayloadValidator }),
   async (req, res) => {
     const { value } = StagePayloadValidator.validate(req.body);
@@ -41,7 +47,7 @@ StageRoute.post(
   }
 );
 
-StageRoute.get("/detail/:id", async (req, res) => {
+StageRoute.get(path.detail, async (req, res) => {
   const id = req.params.id;
 
   const item = await StageService.detail(id).catch((err: Error) => err);
@@ -55,7 +61,7 @@ StageRoute.get("/detail/:id", async (req, res) => {
 });
 
 StageRoute.put(
-  "/update/:id",
+  path.update,
   ValidationMiddleware({ body: StagePayloadValidator }),
   async (req, res) => {
     const { value } = StagePayloadValidator.validate(req.body);
@@ -74,7 +80,7 @@ StageRoute.put(
   }
 );
 
-StageRoute.delete("/delete/:id", async (req, res) => {
+StageRoute.delete(path.delete, async (req, res) => {
   const id = req.params.id;
 
   const item = await StageService.delete(id).catch((err: Error) => err);
