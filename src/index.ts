@@ -1,29 +1,29 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import { ENV, mongodb } from "~/configs";
-import middleware from "~/middlewares";
+import { ErrorMiddleware, LogMiddleware } from "~/middlewares";
 import routes from "~/routes";
 import response from "~/helpers/response";
+import plugins from "./plugins";
 
 const app = express();
 const port = ENV.PORT;
 
 mongodb();
 
-app.use(express.json());
+app.use(LogMiddleware);
 
-app.use(middleware.LogMiddleware);
-
+plugins(app);
 routes(app);
 
-app.get("/", (req: Request, res: Response, next: NextFunction) => {
+app.get("/", (req, res) => {
   res.json(response.success("QHunt API"));
 });
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).send(response.error(null, "Route not found", 404));
 });
 
-app.use(middleware.ErrorMiddleware);
+app.use(ErrorMiddleware);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
