@@ -1,33 +1,31 @@
-import mongoose from "mongoose";
-import { Timestamps } from "..";
+import { model, Schema, ToObjectOptions } from "mongoose";
+import { User, UserRole } from "./types";
 
-export interface User extends Timestamps {
-  email: string;
-  username: string;
-  password: string;
-}
-
-const ToObject: mongoose.ToObjectOptions = {
+const ToObject: ToObjectOptions = {
   transform: (doc, ret) => {
-    const { _id, password, ...rest } = ret;
+    const { _id, __v, password, ...rest } = ret;
     return { id: _id, ...rest };
   },
 };
 
-const userSchema = new mongoose.Schema<User>(
+const UserSchema = new Schema<User>(
   {
-    username: { type: String, default: "" },
+    name: { type: String, default: "" },
+    role: { type: String, enum: Object.values(UserRole) },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    deletedAt: { type: Date, default: null },
   },
   {
     timestamps: true,
   }
 );
 
-userSchema.set("toJSON", ToObject);
-userSchema.set("toObject", ToObject);
+UserSchema.set("toJSON", ToObject);
+UserSchema.set("toObject", ToObject);
 
-const User = mongoose.model<User>("User", userSchema);
+const User = model<User>("User", UserSchema);
+
+export * from "./types";
 
 export default User;

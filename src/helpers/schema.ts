@@ -8,9 +8,9 @@ interface ValidatorOption<T = unknown> {
 }
 
 const createValidator = <T = unknown>(
-  base: Joi.Schema<T> | Joi.ArraySchema<T>,
+  base: Joi.Schema<T>,
   option?: ValidatorOption<T>
-): Joi.Schema<T> | Joi.ArraySchema<T> => {
+) => {
   let v = base;
   if (option?.required) v = v.required();
   if (option?.allow !== undefined) v = v.allow(option.allow);
@@ -19,13 +19,13 @@ const createValidator = <T = unknown>(
 };
 
 export const string = (option?: ValidatorOption<string | null>) =>
-  createValidator(Joi.string(), option);
+  createValidator(Joi.string(), option) as Joi.StringSchema;
 
 export const number = (option?: ValidatorOption<number | null>) =>
-  createValidator(Joi.number(), option);
+  createValidator(Joi.number(), option) as Joi.NumberSchema;
 
 export const boolean = (option?: ValidatorOption<boolean | null>) =>
-  createValidator(Joi.boolean(), option);
+  createValidator(Joi.boolean(), option) as Joi.BooleanSchema;
 
 export const array = <T = unknown>(
   item: Joi.Schema<T>,
