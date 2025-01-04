@@ -1,18 +1,6 @@
 import mongoose from "mongoose";
 import { ToObject } from "~/helpers/schema";
-import { Timestamps } from "..";
-
-enum StageStatus {
-  Draft = "draft",
-  Publish = "publish",
-}
-
-export interface Stage extends Timestamps {
-  name: string;
-  storyline: string[];
-  status: StageStatus;
-  settings: {};
-}
+import { Stage, StageStatus } from "./types";
 
 const stageSchema = new mongoose.Schema<Stage>(
   {
@@ -34,5 +22,7 @@ stageSchema.set("toObject", ToObject);
 stageSchema.set("toJSON", ToObject);
 
 const Stage = mongoose.model<Stage>("Stage", stageSchema);
+
+export * from "./types";
 
 export default Stage;
