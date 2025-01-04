@@ -1,8 +1,6 @@
 import { Router } from "express";
 import response from "~/helpers/response";
-import jwt from "jsonwebtoken";
 import { AuthMiddleware } from "~/middlewares";
-import User from "~/models/User";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 import { UserPayloadValidator } from "~/validators/UserValidator";
 import UserService from "~/services/UserService";
@@ -12,7 +10,7 @@ const AuthRoute = Router();
 AuthRoute.get("/profile", AuthMiddleware, async (req, res) => {
   const auth = res.locals.user;
 
-  const user = await UserService.detail(auth?.id as string);
+  const user = await UserService.detail(auth?.id as string).catch((err) => err);
 
   if (!user || user instanceof Error) {
     res.status(401).json(response.error({}, "unauthorized", 401));
@@ -28,7 +26,7 @@ AuthRoute.post(
   async (req, res) => {
     const { value } = UserPayloadValidator.validate(req.body);
 
-    const data = await UserService.login(value);
+    const data = await UserService.login(value).catch((err) => err);
 
     if (data instanceof Error) {
       res.status(400).json(response.error({}, data.message));
@@ -45,7 +43,9 @@ AuthRoute.post(
   async (req, res) => {
     const { value } = UserPayloadValidator.validate(req.body);
 
-    const user = await UserService.register(value);
+    const user = await UserService.register(value, res.locals.TID).catch(
+      (err) => err
+    );
 
     if (user instanceof Error) {
       res.status(400).json(response.error({}, user.message));

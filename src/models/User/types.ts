@@ -15,7 +15,7 @@ export interface UserPayload {
   password: string;
 }
 
-export interface User extends UserPayload, Timestamps {
+export interface User extends Timestamps {
   name: string;
   email: string;
   password: string;

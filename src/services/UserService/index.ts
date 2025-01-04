@@ -2,24 +2,46 @@ import User, { UserListQuery, UserPayload, UserRole } from "~/models/User";
 import { compare, hash } from "bcryptjs";
 import { ENV } from "~/configs";
 import { sign } from "jsonwebtoken";
+import UserPublic from "~/models/UserPublic";
+import db from "~/helpers/db";
 
-export const register = async (payload: UserPayload) => {
-  const email = payload.email;
-  const userExists = await User.findOne({ email });
-  if (userExists) return new Error("email taken");
+export const register = async (payload: UserPayload, code?: string) => {
+  return await db.transaction(async (session) => {
+    const email = payload.email;
+    const userExists = await User.findOne({ email }).session(session);
+    if (userExists) throw new Error("email taken");
 
-  const password = await hash(payload.password, 10);
-  return await User.create({ email, password, role: UserRole.Public });
+    const password = await hash(payload.password, 10);
+
+    const [user] = await User.create(
+      [
+        {
+          email,
+          password,
+          role: UserRole.Public,
+        },
+      ],
+      { session }
+    );
+
+    await UserPublic.findOneAndUpdate(
+      { code },
+      { $set: { user: { id: user._id, name: user.name } } },
+      { new: true, session }
+    );
+
+    return user;
+  });
 };
 
 export const login = async (payload: UserPayload) => {
   const email = payload.email;
   const user = await User.findOne({ email });
-  if (!user) return new Error("user not found");
+  if (!user) throw new Error("user not found");
 
   const isPasswordValid = await compare(payload.password, user.password);
 
-  if (!isPasswordValid) return new Error("invalid password");
+  if (!isPasswordValid) throw new Error("invalid password");
 
   const token = sign({ id: user._id }, ENV.JWT_SECRET, {
     expiresIn: 30 * 24 * 60 * 60,
@@ -38,7 +60,7 @@ export const create = async (payload: UserPayload) => {};
 
 export const detail = async (id: string) => {
   return await User.findOne({ _id: id, deletedAt: null }).catch(() => {
-    return new Error("user not found");
+    throw new Error("user not found");
   });
 };
 
