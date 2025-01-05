@@ -30,7 +30,7 @@ const ChallengeSchema = new Schema<Challenge>(
   {
     name: { type: String, required: true },
     storyline: { type: [String] },
-    stage: { type: idNameSchema, required: true },
+    stage: { type: idNameSchema, default: null },
     settings: { type: ChallengeSettingsSchema, default: null },
     contents: { type: [String] },
     deletedAt: { type: Date, default: null },

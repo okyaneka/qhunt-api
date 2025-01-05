@@ -1,5 +1,6 @@
 import { DefaultListParams } from "~/validators";
 import { IdName, Timestamps } from "..";
+import { Stage } from "../Stage";
 
 export enum ChallengeType {
   Trivia = "trivia",
@@ -24,7 +25,7 @@ export interface ChallengeListParams extends DefaultListParams {
 export interface ChallengePayload {
   name: string;
   storyline: string[];
-  stageId: string;
+  stageId: string | null;
   settings: ChallengeSettings;
 }
 
@@ -32,7 +33,7 @@ export interface Challenge extends Timestamps {
   id: string;
   name: string;
   storyline: string[];
-  stage: IdName;
+  stage: Pick<Stage, "id" | "name"> | null;
   settings: ChallengeSettings;
   contents: string[];
 }

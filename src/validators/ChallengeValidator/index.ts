@@ -7,12 +7,12 @@ import {
   ChallengeSettings,
   ChallengeType,
 } from "~/models/Challenge";
-import { DefaultListParams, DefaultListParamsFields } from "~/validators";
+import { DefaultListParamsFields } from "~/validators";
 
 export const ChallengeListParamsValidator =
   schema.generate<ChallengeListParams>({
     ...DefaultListParamsFields,
-    stageId: Joi.string().allow("").default(""),
+    stageId: schema.string().allow("").default(""),
   });
 
 export const ChallengeFeedbackValidator = schema
@@ -22,18 +22,18 @@ export const ChallengeFeedbackValidator = schema
   })
   .default({ positive: "", negative: "" });
 
+export const ChallengeSettingsSchema = schema.generate<ChallengeSettings>({
+  clue: Joi.string().default(""),
+  duration: Joi.number().default(0),
+  type: Joi.string()
+    .valid(...Object.values(ChallengeType))
+    .required(),
+  feedback: ChallengeFeedbackValidator,
+});
+
 export const ChallengePayloadValidator = schema.generate<ChallengePayload>({
   name: Joi.string().required(),
   storyline: Joi.array().items(Joi.string()).default([]),
   stageId: Joi.string().required(),
-  settings: schema
-    .generate<ChallengeSettings>({
-      clue: Joi.string().default(""),
-      duration: Joi.number().default(0),
-      type: Joi.string()
-        .valid(...Object.values(ChallengeType))
-        .required(),
-      feedback: ChallengeFeedbackValidator,
-    })
-    .required(),
+  settings: ChallengeSettingsSchema.required(),
 });
