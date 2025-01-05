@@ -1,5 +1,4 @@
 import CryptoJS from "crypto-js";
-import Challenge from "~/models/Challenge";
 import Qr, {
   Qr as IQr,
   QrContentType,
@@ -8,6 +7,9 @@ import Qr, {
   QrStatus,
   QrUpdatePayload,
 } from "~/models/Qr";
+import ChallengeService from "../ChallengeService";
+import StageService from "../StageService";
+import UserChallengeService from "../UserChallengeService";
 
 export const list = async (params: QrListQuery) => {
   const skip = (params.page - 1) * params.limit;
@@ -59,14 +61,12 @@ export const update = async (id: string, payload: QrUpdatePayload) => {
   if (content?.type) {
     switch (content.type) {
       case QrContentType.Challenge:
-        const challengeRef = await Challenge.findOne({
-          _id: content.refId,
-          deletedAt: null,
-        });
-        if (!challengeRef) throw new Error("challenge not found");
+        await ChallengeService.delete(content.refId);
         value.content = content;
         break;
-
+      case QrContentType.Stage:
+        await StageService.detail(content.refId);
+        value.content = content;
       default:
         break;
     }
@@ -99,6 +99,31 @@ export const deleteMany = async (ids: string[]) => {
   return changed;
 };
 
+export const verify = async (code: string, TID: string) => {
+  const item = await Qr.findOne({
+    code,
+    deletedAt: null,
+    status: QrStatus.Publish,
+  });
+
+  if (!item) throw new Error("qr code invalid");
+
+  switch (item.content?.type) {
+    case QrContentType.Stage:
+      // StageService.setup()
+      return;
+    case QrContentType.Challenge:
+      const userChallenge = await UserChallengeService.sync(
+        TID,
+        item.content.refId
+      );
+      return { type: QrContentType.Challenge, refd: userChallenge.id };
+
+    default:
+      throw new Error("invalid qr content");
+  }
+};
+
 const QrService = {
   generate,
   list,
@@ -106,6 +131,7 @@ const QrService = {
   update,
   delete: _delete,
   deleteMany,
+  verify,
 };
 
 export default QrService;
