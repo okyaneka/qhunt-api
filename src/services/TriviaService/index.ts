@@ -12,6 +12,11 @@ export const sync = async (
     .map((item) => ({ ...item, challenge: idName }));
   const update = items.filter((item) => item.id);
 
+  await Trivia.updateMany(
+    { "challenge.id": challenge.id },
+    { $set: { challenge: null } }
+  );
+
   const actCreate = Trivia.insertMany(create);
   const actUpdate = update.map((item) =>
     Trivia.findOneAndUpdate({ _id: item.id }, { $set: item }, { new: true })

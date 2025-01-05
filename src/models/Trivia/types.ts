@@ -15,7 +15,11 @@ export interface TriviaPayload {
   options: TriviaOption[];
 }
 
-export interface Trivia extends TriviaPayload, Timestamps {
+export interface Trivia extends Timestamps {
   id: string;
-  challenge: IdName;
+  challenge: IdName | null;
+  question: string;
+  feedback: ChallengeFeedback;
+  allowMultiple: boolean;
+  options: TriviaOption[];
 }
