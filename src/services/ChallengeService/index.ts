@@ -40,7 +40,7 @@ export const create = async (payload: ChallengePayload) => {
 
 export const detail = async (id: string) => {
   const item = await Challenge.findOne({ _id: id, deletedAt: null });
-  if (!item) throw new Error("item not found");
+  if (!item) throw new Error("challenge not found");
   return item.toObject();
 };
 
@@ -61,7 +61,7 @@ export const update = async (id: string, payload: ChallengePayload) => {
     { new: true }
   );
 
-  if (!item) throw new Error("item not found");
+  if (!item) throw new Error("challenge not found");
 
   return item.toObject();
 };
@@ -81,7 +81,7 @@ export const _delete = async (id: string) => {
     { $set: { deletedAt: Date.now() } },
     { new: true }
   );
-  if (!item) throw new Error("item not found");
+  if (!item) throw new Error("challenge not found");
 
   return item.toObject();
 };

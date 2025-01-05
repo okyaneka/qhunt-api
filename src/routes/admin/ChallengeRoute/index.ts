@@ -108,14 +108,11 @@ ChallengeRoute.put(
   }
 );
 
-ChallengeRoute.put(path.updateContent, async (req, res) => {
+ChallengeRoute.put(path.updateContent, async (req, res, next) => {
   const id = req.params.id;
 
-  const item = await ChallengeService.detail(id);
-  if (!item) {
-    res.status(400).json(response.error("item not found"));
-    return;
-  }
+  const item = await ChallengeService.detail(id).catch((err: Error) => err);
+  if (item instanceof Error) return next(item);
 
   switch (item.setting.type) {
     case ChallengeType.Trivia:
@@ -127,7 +124,10 @@ ChallengeRoute.put(path.updateContent, async (req, res) => {
         return;
       }
 
-      await TriviaService.sync(item, triviaValue.items);
+      const trivias = await TriviaService.sync(item, triviaValue.items).catch(
+        (err: Error) => err
+      );
+      if (trivias instanceof Error) return next(trivias);
       break;
 
     default:
