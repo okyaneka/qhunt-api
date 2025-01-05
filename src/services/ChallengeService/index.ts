@@ -66,6 +66,15 @@ export const update = async (id: string, payload: ChallengePayload) => {
   return item.toObject();
 };
 
+export const updateContent = async (id: string, content: string[]) => {
+  const item = await Challenge.findOneAndUpdate(
+    { _id: id, deletedAt: null },
+    { $set: { content } }
+  );
+  if (!item) throw new Error("challenge not found");
+  return item;
+};
+
 export const _delete = async (id: string) => {
   const item = await Challenge.findOneAndUpdate(
     { _id: id, deletedAt: null },
@@ -77,6 +86,13 @@ export const _delete = async (id: string) => {
   return item.toObject();
 };
 
-const ChallengeService = { list, create, detail, update, delete: _delete };
+const ChallengeService = {
+  list,
+  create,
+  detail,
+  update,
+  delete: _delete,
+  updateContent,
+};
 
 export default ChallengeService;

@@ -1,5 +1,6 @@
 import { Challenge } from "~/models/Challenge";
 import Trivia, { TriviaPayload } from "~/models/Trivia";
+import ChallengeService from "../ChallengeService";
 
 export const sync = async (
   challenge: Challenge,
@@ -21,14 +22,16 @@ export const sync = async (
     ...actUpdate,
   ]);
 
-  return resUpdate
+  const content = resUpdate
     .map((item) => item?._id.toString())
     .concat(...resCreate.map((item) => item._id.toString()))
     .filter((v) => v != undefined);
+  await ChallengeService.updateContent(challenge.id, content);
+  return content;
 };
 
 export const content = async (challenge: Challenge) => {
-  const items = await Trivia.find({ "challenge.id": challenge.id });
+  const items = await Trivia.find({ _id: { $in: challenge.content } });
   return items.map((item) => item.toObject());
 };
 

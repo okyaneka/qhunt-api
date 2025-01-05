@@ -32,6 +32,7 @@ const ChallengeSchema = new Schema<Challenge>(
     storyline: { type: [String] },
     stage: { type: idNameSchema, required: true },
     setting: { type: ChallengeSettingSchema, default: null },
+    content: { type: [String] },
     deletedAt: { type: Date, default: null },
   },
   { timestamps: true }

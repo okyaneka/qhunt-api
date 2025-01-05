@@ -34,4 +34,5 @@ export interface Challenge extends Timestamps {
   storyline: string[];
   stage: IdName;
   setting: ChallengeSetting;
+  content: string[];
 }
