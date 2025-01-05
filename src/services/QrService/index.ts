@@ -1,6 +1,5 @@
 import CryptoJS from "crypto-js";
 import Qr, {
-  Qr as IQr,
   QrContentType,
   QrListQuery,
   QrPayload,
@@ -52,8 +51,7 @@ export const detail = async (id: string) => {
 };
 
 export const update = async (id: string, payload: QrUpdatePayload) => {
-  const { content, ...rest } = payload;
-  const value: Partial<IQr> = rest;
+  const { content, ...value } = payload as any;
 
   const item = await Qr.findOne({ _id: id, deletedAt: null });
   if (!item) throw new Error("item not found");
