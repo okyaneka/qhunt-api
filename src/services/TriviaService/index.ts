@@ -31,7 +31,7 @@ export const sync = async (
 };
 
 export const content = async (challenge: Challenge) => {
-  const items = await Trivia.find({ _id: { $in: challenge.content } });
+  const items = await Trivia.find({ _id: { $in: challenge.contents } });
   return items.map((item) => item.toObject());
 };
 

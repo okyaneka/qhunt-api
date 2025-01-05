@@ -11,8 +11,8 @@ const StageSchema = new Schema<UserChallenge["stage"]>(
   { _id: false, versionKey: false }
 );
 
-const ChallengeSettingSchema = new Schema<
-  UserChallenge["challenge"]["setting"]
+const ChallengeSettingsSchema = new Schema<
+  UserChallenge["challenge"]["settings"]
 >({
   type: { type: String, enum: Object.values(ChallengeType), required: true },
   duration: { type: Number },
@@ -23,7 +23,7 @@ const ChallengeSchema = new Schema<UserChallenge["challenge"]>(
     id: { type: String, required: true },
     name: { type: String, required: true },
     storyline: { type: [String], required: true },
-    setting: { type: ChallengeSettingSchema, required: true },
+    settings: { type: ChallengeSettingsSchema, required: true },
   },
   { _id: false, versionKey: false }
 );

@@ -1,5 +1,5 @@
 import { Timestamps } from "..";
-import { Challenge, ChallengeSetting } from "../Challenge";
+import { Challenge, ChallengeSettings } from "../Challenge";
 import { Stage } from "../Stage";
 import { UserPublic } from "../UserPublic";
 
@@ -10,12 +10,12 @@ export enum UserChallengeState {
   Result = "result",
 }
 
-export interface UserChallengeContentSetting
-  extends Pick<ChallengeSetting, "duration" | "type"> {}
+export interface UserChallengeContentSettings
+  extends Pick<ChallengeSettings, "duration" | "type"> {}
 
 export interface UserChallengeContent
   extends Pick<Challenge, "id" | "name" | "storyline"> {
-  setting: UserChallengeContentSetting;
+  settings: UserChallengeContentSettings;
 }
 
 export interface UserChallenge extends Timestamps {

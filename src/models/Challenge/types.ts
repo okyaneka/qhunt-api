@@ -10,7 +10,7 @@ export interface ChallengeFeedback {
   negative: string;
 }
 
-export interface ChallengeSetting {
+export interface ChallengeSettings {
   type: ChallengeType;
   duration: number;
   clue: string;
@@ -25,7 +25,7 @@ export interface ChallengePayload {
   name: string;
   storyline: string[];
   stageId: string;
-  setting: ChallengeSetting;
+  settings: ChallengeSettings;
 }
 
 export interface Challenge extends Timestamps {
@@ -33,6 +33,6 @@ export interface Challenge extends Timestamps {
   name: string;
   storyline: string[];
   stage: IdName;
-  setting: ChallengeSetting;
-  content: string[];
+  settings: ChallengeSettings;
+  contents: string[];
 }

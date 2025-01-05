@@ -4,7 +4,7 @@ import {
   ChallengeFeedback,
   ChallengeListParams,
   ChallengePayload,
-  ChallengeSetting,
+  ChallengeSettings,
   ChallengeType,
 } from "~/models/Challenge";
 import { DefaultListParams, DefaultListParamsFields } from "~/validators";
@@ -26,8 +26,8 @@ export const ChallengePayloadValidator = schema.generate<ChallengePayload>({
   name: Joi.string().required(),
   storyline: Joi.array().items(Joi.string()).default([]),
   stageId: Joi.string().required(),
-  setting: schema
-    .generate<ChallengeSetting>({
+  settings: schema
+    .generate<ChallengeSettings>({
       clue: Joi.string().default(""),
       duration: Joi.number().default(0),
       type: Joi.string()

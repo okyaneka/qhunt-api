@@ -17,9 +17,9 @@ export const sync = async (code: string, challengeId: string) => {
           id: challenge.id,
           name: challenge.name,
           storyline: challenge.storyline,
-          setting: {
-            type: challenge.setting.type,
-            duration: challenge.setting.duration,
+          settings: {
+            type: challenge.settings.type,
+            duration: challenge.settings.duration,
           },
         },
         userPublic: {
@@ -32,12 +32,12 @@ export const sync = async (code: string, challengeId: string) => {
     { new: true, upsert: true }
   );
 
-  switch (challenge.setting.type) {
+  switch (challenge.settings.type) {
     case ChallengeType.Trivia:
       const triviaContent = await UserTriviaService.setup(
         user,
         userChallenge,
-        challenge.content
+        challenge.contents
       );
 
       userChallenge.contents = triviaContent;

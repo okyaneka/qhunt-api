@@ -76,7 +76,7 @@ ChallengeRoute.get(path.detailContent, async (req, res) => {
     return;
   }
 
-  switch (item.setting.type) {
+  switch (item.settings.type) {
     case ChallengeType.Trivia:
       const triviaContent = await TriviaService.content(item);
       res.json(response.success(triviaContent));
@@ -114,7 +114,7 @@ ChallengeRoute.put(path.updateContent, async (req, res, next) => {
   const item = await ChallengeService.detail(id).catch((err: Error) => err);
   if (item instanceof Error) return next(item);
 
-  switch (item.setting.type) {
+  switch (item.settings.type) {
     case ChallengeType.Trivia:
       const { value: triviaValue, error: triviaError } =
         TriviaItemsPayloadValidator.validate(req.body, { abortEarly: false });
