@@ -64,7 +64,7 @@ export const PeriodeValidator = generate<Periode>({
 export const ToObject: mongoose.ToObjectOptions = {
   transform: (doc, ret) => {
     const { _id, deletedAt, __v, ...rest } = ret;
-    return { id: _id, ...rest };
+    return { id: _id.toString(), ...rest };
   },
 };
 
