@@ -1,6 +1,10 @@
 import db from "~/helpers/db";
 import Challenge from "~/models/Challenge";
-import Stage, { StageListParams, StagePayload } from "~/models/Stage";
+import Stage, {
+  StageListParams,
+  StagePayload,
+  StageStatus,
+} from "~/models/Stage";
 
 const isUsed = async (ids: string[], id?: string) => {
   const filter: any = {
@@ -105,6 +109,14 @@ export const _delete = async (id: string) => {
   return item;
 };
 
-const StageService = { list, create, detail, update, delete: _delete };
+export const verify = async (id: string) => {
+  const item = await Stage.findOne({ _id: id, deletedAt: null });
+  if (!item) throw new Error("stage not found");
+  if (item.status !== StageStatus.Publish)
+    throw new Error("stage not published yet");
+  return item.toObject();
+};
+
+const StageService = { list, create, detail, update, delete: _delete, verify };
 
 export default StageService;

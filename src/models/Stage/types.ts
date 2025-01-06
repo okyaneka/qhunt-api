@@ -25,6 +25,10 @@ export interface StagePayload {
   settings: StageSettings;
 }
 
+export type StageForeign = Pick<Stage, "id" | "name" | "storyline"> & {
+  settings: Pick<StageSettings, "periode">;
+};
+
 export interface Stage extends Timestamps {
   id: string;
   name: string;

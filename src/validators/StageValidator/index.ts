@@ -1,6 +1,11 @@
 import Joi from "joi";
 import schema from "~/helpers/schema";
-import { StageListParams, StagePayload, StageStatus } from "~/models/Stage";
+import {
+  StageForeign,
+  StageListParams,
+  StagePayload,
+  StageStatus,
+} from "~/models/Stage";
 import { DefaultListQueryFields } from "..";
 
 export const StageSettingsValidator = schema.generate<StagePayload["settings"]>(
@@ -24,4 +29,13 @@ export const StagePayloadValidator = schema.generate<StagePayload>({
     .string({ required: true })
     .valid(...Object.values(StageStatus)),
   settings: StageSettingsValidator.required(),
+});
+
+export const StageForeignValidator = schema.generate<StageForeign>({
+  id: schema.string({ required: true }),
+  name: schema.string({ required: true }),
+  storyline: schema.array(Joi.string(), { defaultValue: [] }),
+  settings: schema.generate<StageForeign["settings"]>({
+    periode: schema.PeriodeValidator.allow(null),
+  }),
 });
