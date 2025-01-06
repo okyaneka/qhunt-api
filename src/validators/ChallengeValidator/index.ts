@@ -2,9 +2,11 @@ import Joi from "joi";
 import schema from "~/helpers/schema";
 import {
   ChallengeFeedback,
+  ChallengeForeign,
   ChallengeListParams,
   ChallengePayload,
   ChallengeSettings,
+  ChallengeStatus,
   ChallengeType,
 } from "~/models/Challenge";
 import { DefaultListParamsFields } from "~/validators";
@@ -23,17 +25,32 @@ export const ChallengeFeedbackValidator = schema
   .default({ positive: "", negative: "" });
 
 export const ChallengeSettingsSchema = schema.generate<ChallengeSettings>({
-  clue: Joi.string().default(""),
-  duration: Joi.number().default(0),
-  type: Joi.string()
-    .valid(...Object.values(ChallengeType))
-    .required(),
+  clue: schema.string({ defaultValue: "" }),
+  duration: schema.number({ defaultValue: 0 }),
+  type: schema
+    .string({ required: true })
+    .valid(...Object.values(ChallengeType)),
   feedback: ChallengeFeedbackValidator,
 });
 
+export const ChallengeForeignValidator = schema.generate<ChallengeForeign>({
+  id: schema.string({ required: true }),
+  name: schema.string({ required: true }),
+  storyline: schema.array(Joi.string(), { defaultValue: [] }),
+  settings: schema.generate<ChallengeForeign["settings"]>({
+    duration: schema.number({ allow: 0 }),
+    type: schema
+      .string({ required: true })
+      .valid(...Object.values(ChallengeType)),
+  }),
+});
+
 export const ChallengePayloadValidator = schema.generate<ChallengePayload>({
-  name: Joi.string().required(),
-  storyline: Joi.array().items(Joi.string()).default([]),
-  stageId: Joi.string().required(),
+  name: schema.string({ required: true }),
+  storyline: schema.array(schema.string()).default([]),
+  stageId: schema.string({ required: true }),
+  status: schema
+    .string({ required: true })
+    .valid(...Object.values(ChallengeStatus)),
   settings: ChallengeSettingsSchema.required(),
 });

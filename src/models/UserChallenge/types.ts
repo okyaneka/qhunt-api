@@ -1,6 +1,5 @@
 import { Timestamps } from "..";
-import { Challenge, ChallengeSettings } from "../Challenge";
-import { Stage } from "../Stage";
+import { ChallengeType } from "../Challenge";
 import { UserPublic } from "../UserPublic";
 
 export enum UserChallengeState {
@@ -10,19 +9,36 @@ export enum UserChallengeState {
   Result = "result",
 }
 
-export interface UserChallengeContentSettings
-  extends Pick<ChallengeSettings, "duration" | "type"> {}
+export interface UserChallengeStage {
+  id: string;
+  stageId: string;
+  name: string;
+}
 
-export interface UserChallengeContent
-  extends Pick<Challenge, "id" | "name" | "storyline"> {
+export interface UserChallengeContentSettings {
+  duration: number;
+  type: ChallengeType;
+}
+
+export interface UserChallengeContent {
+  id: string;
+  name: string;
+  storyline: string[];
   settings: UserChallengeContentSettings;
+}
+
+export interface UserChallengeForeign {
+  id: string;
+  challengeId: string;
+  name: string;
 }
 
 export interface UserChallenge extends Timestamps {
   id: string;
   userPublic: Pick<UserPublic, "id" | "name" | "code">;
-  stage: Pick<Stage, "id" | "name"> | null;
+  stage: UserChallengeStage | null;
   challenge: UserChallengeContent;
+  founded: boolean;
   state: UserChallengeState;
   score: number | null;
   contents: string[];

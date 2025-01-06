@@ -4,6 +4,7 @@ import {
   Challenge,
   ChallengeFeedback,
   ChallengeSettings,
+  ChallengeStatus,
   ChallengeType,
 } from "./types";
 import { idNameSchema } from "..";
@@ -29,8 +30,13 @@ const ChallengeSettingsSchema = new Schema<ChallengeSettings>(
 const ChallengeSchema = new Schema<Challenge>(
   {
     name: { type: String, required: true },
-    storyline: { type: [String] },
     stage: { type: idNameSchema, default: null },
+    storyline: { type: [String] },
+    status: {
+      type: String,
+      enum: Object.values(ChallengeStatus),
+      default: ChallengeStatus.Draft,
+    },
     settings: { type: ChallengeSettingsSchema, default: null },
     contents: { type: [String] },
     deletedAt: { type: Date, default: null },

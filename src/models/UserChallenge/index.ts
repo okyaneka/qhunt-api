@@ -6,6 +6,7 @@ import { ChallengeType } from "../Challenge";
 const StageSchema = new Schema<UserChallenge["stage"]>(
   {
     id: { type: String, required: true },
+    stageId: { type: String, required: true },
     name: { type: String, required: true },
   },
   { _id: false, versionKey: false }
@@ -42,6 +43,7 @@ const UserChallengeSchema = new Schema<UserChallenge>(
     stage: { type: StageSchema, default: null },
     challenge: { type: ChallengeSchema, required: true },
     userPublic: { type: UserPublicSchema, required: true },
+    founded: { type: Boolean, default: false },
     state: {
       type: String,
       enum: Object.values(UserChallengeState),

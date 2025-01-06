@@ -1,56 +1,104 @@
-import { ChallengeType } from "~/models/Challenge";
-import UserChallenge from "~/models/UserChallenge";
+import db from "~/helpers/db";
 import ChallengeService from "../ChallengeService";
+import UserChallenge, { UserChallengeForeign } from "~/models/UserChallenge";
 import UserPublicService from "../UserPublicService";
+import UserStageService from "../UserStageService";
 import UserTriviaService from "../UserTriviaService";
+import { ChallengeForeignValidator } from "~/validators/ChallengeValidator";
+import { ChallengeForeign, ChallengeType } from "~/models/Challenge";
+import { UserPublicForeignValidator } from "~/validators/UserPublicValidator";
+import { StageForeignValidator } from "~/validators/StageValidator";
+import { UserStage, UserStageForeign } from "~/models/UserStage";
+import { UserStageForeignValidator } from "~/validators/UserStageValidator";
+import { UserPublicForeign } from "~/models/UserPublic";
 
-export const sync = async (code: string, challengeId: string) => {
-  const user = await UserPublicService.verify(code);
-  const challenge = await ChallengeService.detail(challengeId);
+export const setup = async (
+  code: string,
+  challengeId: string,
+  founded: boolean = true
+) => {
+  return db.transaction(async (session) => {
+    const userChallengeExists = await UserChallenge.findOne({
+      "userPublic.code": code,
+      "challenge.id": challengeId,
+      deletedAt: null,
+    });
 
-  const userChallenge = await UserChallenge.findOneAndUpdate(
-    { "userPublic.code": code, "challenge.id": challengeId, deletedAt: null },
-    {
-      $set: {
-        stage: challenge.stage,
-        challenge: {
-          id: challenge.id,
-          name: challenge.name,
-          storyline: challenge.storyline,
-          settings: {
-            type: challenge.settings.type,
-            duration: challenge.settings.duration,
-          },
+    if (userChallengeExists) {
+      userChallengeExists.founded = true;
+      await userChallengeExists.save();
+      return userChallengeExists.toObject();
+    }
+
+    const userPublicData = await UserPublicService.verify(code);
+    const challengeData = await ChallengeService.detail(challengeId);
+
+    const stageId = challengeData.stage?.id;
+
+    const stageData = stageId
+      ? await UserStageService.setup(code, stageId)
+      : null;
+
+    const stage: UserStageForeign | null = stageId
+      ? await UserStageForeignValidator.validateAsync({
+          id: stageData?.id,
+          stageId: stageData?.stage?.id,
+          name: stageData?.stage?.name,
+        })
+      : null;
+
+    const userPublic: UserPublicForeign =
+      await UserPublicForeignValidator.validateAsync(userPublicData, {
+        abortEarly: false,
+        stripUnknown: true,
+        convert: true,
+      });
+
+    const challenge: ChallengeForeign =
+      await ChallengeForeignValidator.validateAsync(challengeData, {
+        abortEarly: false,
+        stripUnknown: true,
+        convert: true,
+      });
+
+    const [userChallengeData] = await UserChallenge.create(
+      [
+        {
+          stage,
+          challenge,
+          userPublic,
+          founded,
         },
-        userPublic: {
-          id: user.id,
-          name: user.name,
-          code: user.code,
-        },
-      },
-    },
-    { new: true, upsert: true }
-  );
+      ],
+      { session }
+    );
 
-  switch (challenge.settings.type) {
-    case ChallengeType.Trivia:
-      const triviaContent = await UserTriviaService.setup(
-        user,
-        userChallenge,
-        challenge.contents
-      );
+    const userChallenge: UserChallengeForeign = {
+      id: userChallengeData.id,
+      challengeId: userChallengeData.challenge.id,
+      name: userChallengeData.challenge.name,
+    };
 
-      userChallenge.contents = triviaContent;
-      await userChallenge.save();
-      break;
+    switch (challenge.settings.type) {
+      case ChallengeType.Trivia:
+        const triviaContent = await UserTriviaService.setup(
+          userPublic,
+          userChallenge,
+          challengeData.contents
+        );
 
-    default:
-      break;
-  }
+        userChallengeData.contents = triviaContent;
+        await userChallengeData.save({ session });
+        break;
 
-  return userChallenge.toObject();
+      default:
+        break;
+    }
+
+    return userChallengeData.toObject();
+  });
 };
 
-const UserChallengeService = { sync };
+const UserChallengeService = { setup };
 
 export default UserChallengeService;

@@ -1,6 +1,7 @@
 import Challenge, {
   ChallengeListParams,
   ChallengePayload,
+  ChallengeStatus,
 } from "~/models/Challenge";
 import StageService from "../StageService";
 import Stage from "~/models/Stage";
@@ -9,7 +10,6 @@ import db from "~/helpers/db";
 export const list = async (params: ChallengeListParams) => {
   const skip = (params.page - 1) * params.limit;
   const filter: any = { deletedAt: null };
-  console.log(params);
   if (params.stageId == "null") filter.stage = null;
   else if (params.stageId) filter["stage.id"] = params.stageId;
   const list = await Challenge.find(filter)
@@ -90,13 +90,15 @@ export const update = async (id: string, payload: ChallengePayload) => {
   });
 };
 
-export const updateContent = async (id: string, content: string[]) => {
+export const updateContent = async (id: string, contents: string[]) => {
   const item = await Challenge.findOneAndUpdate(
     { _id: id, deletedAt: null },
-    { $set: { content } }
+    { $set: { contents } },
+    { new: true }
   );
+
   if (!item) throw new Error("challenge not found");
-  return item;
+  return item.toObject();
 };
 
 export const _delete = async (id: string) => {
@@ -110,13 +112,22 @@ export const _delete = async (id: string) => {
   return item.toObject();
 };
 
+export const verify = async (id: string) => {
+  const item = await Challenge.findOne({ _id: id, deletedAt: null });
+  if (!item) throw new Error("challenge not found");
+  if (item.status !== ChallengeStatus.Publish)
+    throw new Error("challenge not published yet");
+  return item.toObject();
+};
+
 const ChallengeService = {
   list,
   create,
   detail,
   update,
-  delete: _delete,
   updateContent,
+  delete: _delete,
+  verify,
 };
 
 export default ChallengeService;
