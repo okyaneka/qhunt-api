@@ -31,7 +31,9 @@ export const sync = async (
     .map((item) => item?._id.toString())
     .concat(...resCreate.map((item) => item._id.toString()))
     .filter((v) => v != undefined);
+
   await ChallengeService.updateContent(challenge.id, content);
+
   return content;
 };
 
@@ -40,6 +42,10 @@ export const content = async (challenge: Challenge) => {
   return items.map((item) => item.toObject());
 };
 
-const TriviaService = { sync, content };
+export const detail = async (id: string) => {};
+
+export const verify = async (id: string) => {};
+
+const TriviaService = { sync, content, detail, verify };
 
 export default TriviaService;
