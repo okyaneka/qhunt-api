@@ -8,18 +8,19 @@ import Qr, {
 } from "~/models/Qr";
 import ChallengeService from "../ChallengeService";
 import StageService from "../StageService";
-import UserChallengeService from "../UserChallengeService";
+import UserStageService from "../UserStageService";
+import TriviaService from "../TriviaService";
 
 export const list = async (params: QrListQuery) => {
   const skip = (params.page - 1) * params.limit;
   const filter: any = { deletedAt: null };
-  if (params.status != null) filter.status = params.status;
+  if (params.status) filter.status = params.status;
   const items = await Qr.find(filter)
     .skip(skip)
     .limit(params.limit)
     .sort({ createdAt: -1 });
 
-  const totalItems = await Qr.countDocuments({ deletedAt: null });
+  const totalItems = await Qr.countDocuments(filter);
   const totalPages = Math.ceil(totalItems / params.limit);
 
   return {
@@ -51,26 +52,23 @@ export const detail = async (id: string) => {
 };
 
 export const update = async (id: string, payload: QrUpdatePayload) => {
-  const { content, ...value } = payload as any;
-
+  const { content } = payload;
   const item = await Qr.findOne({ _id: id, deletedAt: null });
   if (!item) throw new Error("item not found");
 
-  if (content?.type) {
-    switch (content.type) {
-      case QrContentType.Challenge:
-        await ChallengeService.delete(content.refId);
-        value.content = content;
-        break;
-      case QrContentType.Stage:
-        await StageService.detail(content.refId);
-        value.content = content;
-      default:
-        break;
-    }
+  if (content) {
+    const serviceMap = {
+      [QrContentType.Challenge]: ChallengeService,
+      [QrContentType.Stage]: StageService,
+      [QrContentType.Trivia]: TriviaService,
+    };
+
+    const service = serviceMap[content.type];
+    const action = payload.status === QrStatus.Draft ? "detail" : "verify";
+    await service[action](content.refId);
   }
 
-  Object.assign(item, value);
+  Object.assign(item, payload);
   await item.save();
   return item.toObject();
 };
@@ -98,28 +96,30 @@ export const deleteMany = async (ids: string[]) => {
 };
 
 export const verify = async (code: string, TID: string) => {
-  const item = await Qr.findOne({
+  const qrData = await Qr.findOne({
     code,
     deletedAt: null,
     status: QrStatus.Publish,
   });
 
-  if (!item) throw new Error("qr code invalid");
+  if (!qrData) throw new Error("qr code invalid");
 
-  switch (item.content?.type) {
-    case QrContentType.Stage:
-      // StageService.setup()
-      return;
-    case QrContentType.Challenge:
-      const userChallenge = await UserChallengeService.sync(
-        TID,
-        item.content.refId
-      );
-      return { type: QrContentType.Challenge, refd: userChallenge.id };
+  const { content } = qrData;
 
-    default:
-      throw new Error("invalid qr content");
+  if (content) {
+    const services = {
+      [QrContentType.Stage]: UserStageService,
+      [QrContentType.Challenge]: UserStageService,
+      [QrContentType.Trivia]: null,
+    };
+
+    const service = services[content.type];
+    service?.setup(TID, content.refId);
+  } else {
+    throw new Error("invalid qr content");
   }
+
+  return qrData.content;
 };
 
 const QrService = {
