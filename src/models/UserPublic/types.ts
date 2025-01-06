@@ -23,3 +23,5 @@ export interface UserPublic extends Timestamps {
   phone: string;
   lastAccessedAt: Date;
 }
+
+export type UserPublicForeign = Pick<UserPublic, "id" | "name" | "code">;

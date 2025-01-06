@@ -2,6 +2,7 @@ import { DefaultListParams } from "~/validators";
 import { Timestamps } from "..";
 
 export enum UserRole {
+  Admin = "admin",
   Private = "private",
   Public = "public",
 }
