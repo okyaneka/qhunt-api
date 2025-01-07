@@ -1,53 +1,19 @@
 import { model, Schema } from "mongoose";
 import { ToObject } from "~/helpers/schema";
-import { UserChallenge, UserChallengeState } from "./types";
-import { ChallengeType } from "../Challenge";
-
-const StageSchema = new Schema<UserChallenge["stage"]>(
-  {
-    id: { type: String, required: true },
-    stageId: { type: String, required: true },
-    name: { type: String, required: true },
-  },
-  { _id: false, versionKey: false }
-);
-
-const ChallengeSettingsSchema = new Schema<
-  UserChallenge["challenge"]["settings"]
->({
-  type: { type: String, enum: Object.values(ChallengeType), required: true },
-  duration: { type: Number },
-});
-
-const ChallengeSchema = new Schema<UserChallenge["challenge"]>(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    storyline: { type: [String], required: true },
-    settings: { type: ChallengeSettingsSchema, required: true },
-  },
-  { _id: false, versionKey: false }
-);
-
-const UserPublicSchema = new Schema<UserChallenge["userPublic"]>(
-  {
-    id: { type: String, required: true },
-    code: { type: String, required: true },
-    name: { type: String, default: "" },
-  },
-  { _id: false, versionKey: false }
-);
+import { UserChallenge, UserChallengeStatus } from "./types";
+import { ChallengeForeignSchema } from "../Challenge";
+import { UserPublicForeignSchema } from "../UserPublic";
+import { UserStageForeignSchema } from "../UserStage";
 
 const UserChallengeSchema = new Schema<UserChallenge>(
   {
-    stage: { type: StageSchema, default: null },
-    challenge: { type: ChallengeSchema, required: true },
-    userPublic: { type: UserPublicSchema, required: true },
-    founded: { type: Boolean, default: false },
-    state: {
+    userStage: { type: UserStageForeignSchema, default: null },
+    challenge: { type: ChallengeForeignSchema, required: true },
+    userPublic: { type: UserPublicForeignSchema, required: true },
+    status: {
       type: String,
-      enum: Object.values(UserChallengeState),
-      default: UserChallengeState.Storyline,
+      enum: Object.values(UserChallengeStatus),
+      default: UserChallengeStatus.Undiscovered,
     },
     contents: { type: [String], default: [] },
     score: { type: Number, default: null },
