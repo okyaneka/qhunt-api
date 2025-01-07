@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { UserPublic, UserPublicGender } from "./types";
+import { UserPublic, UserPublicForeign, UserPublicGender } from "./types";
 import { idNameSchema } from "..";
 import { ToObject } from "~/helpers/schema";
 
@@ -31,5 +31,14 @@ const UserPublic = model<UserPublic>(
 );
 
 export * from "./types";
+
+export const UserPublicForeignSchema = new Schema<UserPublicForeign>(
+  {
+    id: { type: String, required: true },
+    code: { type: String, required: true },
+    name: { type: String },
+  },
+  { _id: false }
+);
 
 export default UserPublic;
