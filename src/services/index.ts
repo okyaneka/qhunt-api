@@ -2,14 +2,14 @@ import ChallengeService from "./ChallengeService";
 import QrService from "./QrService";
 import TriviaService from "./TriviaService";
 import UserService from "./UserService";
-import UserServicePublic from "./UserServicePublic";
+import UserPublicService from "./UserPublicService";
 
 export {
   ChallengeService,
   QrService,
   TriviaService,
   UserService,
-  UserServicePublic,
+  UserPublicService,
 };
 
 const services = {
@@ -17,7 +17,7 @@ const services = {
   QrService,
   TriviaService,
   UserService,
-  UserServicePublic,
+  UserPublicService,
 };
 
 export default services;

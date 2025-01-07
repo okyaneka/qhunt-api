@@ -34,14 +34,11 @@ StageRoute.get(
 StageRoute.post(
   path.create,
   ValidationMiddleware({ body: StagePayloadValidator }),
-  async (req, res) => {
+  async (req, res, next) => {
     const { value } = StagePayloadValidator.validate(req.body);
 
     const item = await StageService.create(value).catch((err: Error) => err);
-    if (item instanceof Error) {
-      res.json(response.error());
-      return;
-    }
+    if (item instanceof Error) return next(item);
 
     res.json(response.success(item));
   }
@@ -63,7 +60,7 @@ StageRoute.get(path.detail, async (req, res) => {
 StageRoute.put(
   path.update,
   ValidationMiddleware({ body: StagePayloadValidator }),
-  async (req, res) => {
+  async (req, res, next) => {
     const { value } = StagePayloadValidator.validate(req.body);
     const id = req.params.id;
 
@@ -71,10 +68,7 @@ StageRoute.put(
       (err: Error) => err
     );
 
-    if (item instanceof Error) {
-      res.status(400).json(response.error({}, item.message));
-      return;
-    }
+    if (item instanceof Error) return next(item);
 
     res.json(response.success(item));
   }

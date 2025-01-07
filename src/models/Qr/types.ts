@@ -7,7 +7,9 @@ export enum QrStatus {
 }
 
 export enum QrContentType {
+  Stage = "stage",
   Challenge = "challenge",
+  Trivia = "trivia",
 }
 
 export interface QrContent {

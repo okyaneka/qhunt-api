@@ -29,7 +29,7 @@ const ErrorMiddleware: ErrorRequestHandler = (
   });
 
   console.error(err.stack);
-  res.status(500).json(response.error(null, err.message, 500));
+  res.status(400).json(response.error({}, err.message, 400));
 };
 
 export default ErrorMiddleware;

@@ -14,10 +14,7 @@ import { DefaultListParamsFields } from "~/validators";
 
 export const QrListQueryValidator = schema.generate<QrListQuery>({
   ...DefaultListParamsFields,
-  status: schema
-    .string()
-    .valid(...Object.values(QrStatus))
-    .default(QrStatus.Draft),
+  status: schema.string({ allow: "" }).valid(...Object.values(QrStatus)),
 });
 
 export const QrGeneratePayloadValidator = schema.generate<QrGeneratePayload>({
@@ -32,7 +29,7 @@ const QrContentValidator = schema.generate<QrContent>({
 });
 
 const QrLocationValidator = schema.generate<QrLocation>({
-  label: schema.string({ required: true }),
+  label: schema.string({ required: true, allow: "" }),
   longitude: schema.number({ required: true }),
   latitude: schema.number({ required: true }),
 });

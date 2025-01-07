@@ -3,7 +3,8 @@ import { ToObject } from "~/helpers/schema";
 import {
   Challenge,
   ChallengeFeedback,
-  ChallengeSetting,
+  ChallengeSettings,
+  ChallengeStatus,
   ChallengeType,
 } from "./types";
 import { idNameSchema } from "..";
@@ -16,7 +17,7 @@ export const ChallengeFeedbackSchema = new Schema<ChallengeFeedback>(
   { _id: false, versionKey: false }
 );
 
-const ChallengeSettingSchema = new Schema<ChallengeSetting>(
+const ChallengeSettingsSchema = new Schema<ChallengeSettings>(
   {
     type: { type: String, enum: Object.values(ChallengeType), required: true },
     duration: { type: Number },
@@ -29,9 +30,15 @@ const ChallengeSettingSchema = new Schema<ChallengeSetting>(
 const ChallengeSchema = new Schema<Challenge>(
   {
     name: { type: String, required: true },
+    stage: { type: idNameSchema, default: null },
     storyline: { type: [String] },
-    stage: { type: idNameSchema, required: true },
-    setting: { type: ChallengeSettingSchema, default: null },
+    status: {
+      type: String,
+      enum: Object.values(ChallengeStatus),
+      default: ChallengeStatus.Draft,
+    },
+    settings: { type: ChallengeSettingsSchema, default: null },
+    contents: { type: [String] },
     deletedAt: { type: Date, default: null },
   },
   { timestamps: true }

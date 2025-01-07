@@ -13,9 +13,15 @@ export interface UserPublicPayload {
   phone: string;
 }
 
-export interface UserPublic extends UserPublicPayload, Timestamps {
+export interface UserPublic extends Timestamps {
   id: string;
-  code: string;
   user: IdName;
+  code: string;
+  name: string;
+  gender: UserPublicGender | null;
+  dob: Date | null;
+  phone: string;
   lastAccessedAt: Date;
 }
+
+export type UserPublicForeign = Pick<UserPublic, "id" | "name" | "code">;

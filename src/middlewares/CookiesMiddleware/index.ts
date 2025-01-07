@@ -1,7 +1,7 @@
 import { enc, lib, SHA256 } from "crypto-js";
 import { RequestHandler } from "express";
 import cookies from "~/configs/cookies";
-import { UserServicePublic } from "~/services";
+import { UserPublicService } from "~/services";
 
 const CookiesMiddleware: RequestHandler = async (req, res, next) => {
   const timestamp = Date.now();
@@ -12,7 +12,7 @@ const CookiesMiddleware: RequestHandler = async (req, res, next) => {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3),
   });
 
-  await UserServicePublic.sync(TID);
+  await UserPublicService.sync(TID);
   res.locals.TID = TID;
 
   next();

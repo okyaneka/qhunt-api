@@ -12,7 +12,7 @@ const QrContentSchema = new Schema<QrContent>(
 
 const QrLocationSchema = new Schema<QrLocation>(
   {
-    label: { type: String, required: true },
+    label: { type: String, default: "" },
     longitude: { type: Number, required: true },
     latitude: { type: Number, required: true },
   },

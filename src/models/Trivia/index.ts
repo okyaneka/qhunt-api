@@ -15,7 +15,7 @@ const TriviaOptionSchema = new Schema<TriviaOption>(
 
 const TriviaSchema = new Schema<Trivia>(
   {
-    challenge: { type: idNameSchema, required: true },
+    challenge: { type: idNameSchema, default: null },
     question: { type: String, required: true },
     feedback: { type: ChallengeFeedbackSchema, default: {} },
     allowMultiple: { type: Boolean, default: false },

@@ -1,8 +1,17 @@
-import mongoose from "mongoose";
-import { ToObject } from "~/helpers/schema";
+import { PeriodSchema, ToObject } from "~/helpers/schema";
 import { Stage, StageStatus } from "./types";
+import { model, Schema } from "mongoose";
 
-const stageSchema = new mongoose.Schema<Stage>(
+const StageSettingsSchema = new Schema<Stage["settings"]>(
+  {
+    canDoRandomChallenges: { type: Boolean, default: false },
+    canStartFromChallenges: { type: Boolean, default: false },
+    periode: { type: PeriodSchema, default: null },
+  },
+  { _id: false }
+);
+
+const StageSchema = new Schema<Stage>(
   {
     name: { type: String, required: true },
     storyline: { type: [String], default: [] },
@@ -11,6 +20,8 @@ const stageSchema = new mongoose.Schema<Stage>(
       enum: Object.values(StageStatus),
       default: StageStatus.Draft,
     },
+    settings: { type: StageSettingsSchema, required: true },
+    contents: { type: [String], default: [] },
     deletedAt: { type: Date, default: null },
   },
   {
@@ -18,10 +29,10 @@ const stageSchema = new mongoose.Schema<Stage>(
   }
 );
 
-stageSchema.set("toObject", ToObject);
-stageSchema.set("toJSON", ToObject);
+StageSchema.set("toObject", ToObject);
+StageSchema.set("toJSON", ToObject);
 
-const Stage = mongoose.model<Stage>("Stage", stageSchema);
+const Stage = model<Stage>("Stage", StageSchema);
 
 export * from "./types";
 
