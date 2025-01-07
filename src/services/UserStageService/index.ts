@@ -10,17 +10,20 @@ import { StageForeignValidator } from "~/validators/StageValidator";
 import { UserChallenge } from "~/models/UserChallenge";
 import { UserPublicForeignValidator } from "~/validators/UserPublicValidator";
 
-export const setup = async (
-  code: string,
-  stageId: string,
-  defaultChallenge?: string
-): Promise<IUserStage | UserChallenge> => {
-  const userStageExists = await UserStage.findOne({
+export const verify = async (code: string, stageId: string) => {
+  const item = await UserStage.findOne({
     "userPublic.code": code,
     "stage.id": stageId,
     deletedAt: null,
   });
-  if (userStageExists) return userStageExists.toObject();
+  if (!item) throw new Error("user stage not found");
+  return item.toObject();
+};
+
+export const setup = async (code: string, stageId: string) => {
+  const exist = await verify(code, stageId).catch(() => null);
+
+  if (exist) return exist;
 
   const userPublicData = await UserPublicService.verify(code);
   const stageData = await StageService.detail(stageId);
@@ -41,23 +44,11 @@ export const setup = async (
   const userStageData = await UserStage.create({ userPublic, stage });
 
   const contents = stageData.contents.map((challengeId) =>
-    UserChallengeService.setup(
-      code,
-      challengeId,
-      defaultChallenge == challengeId
-    )
+    UserChallengeService.setup(code, challengeId)
   );
   const contentsData = await Promise.all(contents);
   userStageData.contents = contentsData.map((item) => item.id);
   await userStageData.save();
-
-  if (defaultChallenge) {
-    const data = contentsData.find(
-      (item) => item.challenge.id == defaultChallenge
-    );
-    if (!data) throw new Error("challenge not found");
-    return data;
-  }
 
   return userStageData.toObject();
 };
@@ -79,7 +70,14 @@ export const list = async (params: UserStageListParams, TID: string) => {
   const totalPages = Math.ceil(totalItems / params.limit);
 
   return {
-    list: items.map((item) => item.toObject()),
+    list: items.map((item) =>
+      item.toObject({
+        transform: (doc, ret) => {
+          const { _id, __v, userPublic, ...rest } = ret;
+          return { id: _id, ...rest };
+        },
+      })
+    ),
     page: params.page,
     totalItems,
     totalPages,
@@ -93,9 +91,14 @@ export const detail = async (id: string, TID: string) => {
     "userPublic.code": TID,
   });
   if (!item) throw new Error("stage not found");
-  return item.toObject();
+  return item.toObject({
+    transform: (doc, ret) => {
+      const { _id, __v, userPublic, ...rest } = ret;
+      return { id: _id, ...rest };
+    },
+  });
 };
 
-const UserStageService = { setup, list, detail };
+const UserStageService = { verify, setup, list, detail };
 
 export default UserStageService;

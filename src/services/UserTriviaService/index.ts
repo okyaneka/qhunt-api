@@ -14,7 +14,7 @@ export const setup = async (
     .map((item) => item.toObject())
     .map((item) => {
       return UserTrivia.findOneAndUpdate(
-        { "content.id": item.id },
+        { "userPublic.code": userPublic.code, "content.id": item.id },
         {
           $setOnInsert: {
             userPublic,
