@@ -35,8 +35,13 @@ export interface ChallengePayload {
   settings: ChallengeSettings;
 }
 
+export type ChallengeSettingsForeign = Pick<
+  ChallengeSettings,
+  "type" | "duration"
+>;
+
 export type ChallengeForeign = Pick<Challenge, "id" | "name" | "storyline"> & {
-  settings: Pick<ChallengeSettings, "type" | "duration">;
+  settings: ChallengeSettingsForeign;
 };
 
 export interface Challenge extends Timestamps {

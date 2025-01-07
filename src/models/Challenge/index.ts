@@ -3,7 +3,9 @@ import { ToObject } from "~/helpers/schema";
 import {
   Challenge,
   ChallengeFeedback,
+  ChallengeForeign,
   ChallengeSettings,
+  ChallengeSettingsForeign,
   ChallengeStatus,
   ChallengeType,
 } from "./types";
@@ -50,5 +52,28 @@ ChallengeSchema.set("toObject", ToObject);
 const Challenge = model<Challenge>("Challenge", ChallengeSchema);
 
 export * from "./types";
+
+export const ChallengeSettingsForeignSchema =
+  new Schema<ChallengeSettingsForeign>(
+    {
+      type: {
+        type: String,
+        enum: Object.values(ChallengeType),
+        required: true,
+      },
+      duration: { type: Number },
+    },
+    { _id: false }
+  );
+
+export const ChallengeForeignSchema = new Schema<ChallengeForeign>(
+  {
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    storyline: { type: [String], required: true },
+    settings: { type: ChallengeSettingsSchema, required: true },
+  },
+  { _id: false }
+);
 
 export default Challenge;
