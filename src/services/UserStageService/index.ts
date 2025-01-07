@@ -2,7 +2,10 @@ import db from "~/helpers/db";
 import StageService from "../StageService";
 import UserChallengeService from "../UserChallengeService";
 import UserPublicService from "../UserPublicService";
-import UserStage, { UserStage as IUserStage } from "~/models/UserStage";
+import UserStage, {
+  UserStage as IUserStage,
+  UserStageListParams,
+} from "~/models/UserStage";
 import { StageForeignValidator } from "~/validators/StageValidator";
 import { UserChallenge } from "~/models/UserChallenge";
 import { UserPublicForeignValidator } from "~/validators/UserPublicValidator";
@@ -22,16 +25,7 @@ export const setup = async (
   const userPublicData = await UserPublicService.verify(code);
   const stageData = await StageService.detail(stageId);
 
-  /**
-   * FIXME: enhance validation
-   *
-   * 1. check config stage canStartFromChallenges
-   * 2. check userStage exists:
-   *    - if userStage not exist yet and canStartFromChallenges
-   *      - then setup userStage
-   *      - else throw error("user stage has not been found yet")
-   * 4.
-   */
+  // FIXME: nanti akan ada validasi di sini. lihat juga di setup challenge dan beberapa anak2 nya
 
   const userPublic = await UserPublicForeignValidator.validateAsync(
     userPublicData,
@@ -54,6 +48,8 @@ export const setup = async (
     )
   );
   const contentsData = await Promise.all(contents);
+  userStageData.contents = contentsData.map((item) => item.id);
+  await userStageData.save();
 
   if (defaultChallenge) {
     const data = contentsData.find(
@@ -66,6 +62,40 @@ export const setup = async (
   return userStageData.toObject();
 };
 
-const UserStageService = { setup };
+export const list = async (params: UserStageListParams, TID: string) => {
+  const skip = (params.page - 1) * params.limit;
+  const filter: any = {
+    deletedAt: null,
+    "stage.name": { $regex: params.search, $options: "i" },
+    "userPublic.code": TID,
+  };
+  if (params.status) filter.status = params.status;
+  const items = await UserStage.find(filter)
+    .skip(skip)
+    .limit(params.limit)
+    .sort({ createdAt: -1 });
+
+  const totalItems = await UserStage.countDocuments(filter);
+  const totalPages = Math.ceil(totalItems / params.limit);
+
+  return {
+    list: items.map((item) => item.toObject()),
+    page: params.page,
+    totalItems,
+    totalPages,
+  };
+};
+
+export const detail = async (id: string, TID: string) => {
+  const item = await UserStage.findOne({
+    _id: id,
+    deletedAt: null,
+    "userPublic.code": TID,
+  });
+  if (!item) throw new Error("stage not found");
+  return item.toObject();
+};
+
+const UserStageService = { setup, list, detail };
 
 export default UserStageService;
