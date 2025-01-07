@@ -14,6 +14,7 @@ import { DefaultListParamsFields } from "~/validators";
 
 export const QrListQueryValidator = schema.generate<QrListQuery>({
   ...DefaultListParamsFields,
+  code: schema.string({ allow: "" }),
   status: schema.string({ allow: "" }).valid(...Object.values(QrStatus)),
 });
 

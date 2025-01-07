@@ -10,11 +10,13 @@ import ChallengeService from "../ChallengeService";
 import StageService from "../StageService";
 import UserStageService from "../UserStageService";
 import TriviaService from "../TriviaService";
+import UserChallengeService from "../UserChallengeService";
 
 export const list = async (params: QrListQuery) => {
   const skip = (params.page - 1) * params.limit;
   const filter: any = { deletedAt: null };
   if (params.status) filter.status = params.status;
+  if (params.code) filter.code = params.code;
   const items = await Qr.find(filter)
     .skip(skip)
     .limit(params.limit)
@@ -105,21 +107,19 @@ export const verify = async (code: string, TID: string) => {
   if (!qrData) throw new Error("qr code invalid");
 
   const { content } = qrData;
+  if (!content) throw new Error("invalid qr content");
 
-  if (content) {
-    const services = {
-      [QrContentType.Stage]: UserStageService,
-      [QrContentType.Challenge]: UserStageService,
-      [QrContentType.Trivia]: null,
-    };
+  const services = {
+    [QrContentType.Stage]: UserStageService,
+    [QrContentType.Challenge]: UserChallengeService,
+    [QrContentType.Trivia]: null,
+  };
 
-    const service = services[content.type];
-    service?.setup(TID, content.refId);
-  } else {
-    throw new Error("invalid qr content");
-  }
+  const service = services[content.type];
+  const data = await service?.setup(TID, content.refId);
+  if (data) content.refId = data.id;
 
-  return qrData.content;
+  return content;
 };
 
 const QrService = {
