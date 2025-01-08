@@ -1,12 +1,9 @@
 import UserPublic from "~/models/UserPublic";
-import UserChallengeService from "../UserChallengeService";
 
-export const sync = async (code: string) => {
-  return UserPublic.findOneAndUpdate(
-    { code, deletedAt: null },
-    { $setOnInsert: { code }, $set: { lastAccessedAt: Date.now() } },
-    { new: true, upsert: true }
-  );
+export const sync = async (TID: string) => {
+  const exists = await UserPublic.findOne({ code: TID, deletedAt: null });
+  if (exists) return exists.toObject();
+  return (await UserPublic.create({ code: TID, deletedAt: null })).toObject();
 };
 
 export const verify = async (code: string) => {
