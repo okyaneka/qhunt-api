@@ -24,9 +24,9 @@ pnpm start
 You can create bash script from this
 
 ```bash
-tag="ghcr.io/<username>/qhunt-api:${sha}"
-docker build -t $tag .
 sha=$(git rev-parse HEAD)
+tag="ghcr.io/okyaneka/qhunt-api:${sha}"
+docker build -t $tag .
 docker push $tag
 echo "$tag success"
 ```
