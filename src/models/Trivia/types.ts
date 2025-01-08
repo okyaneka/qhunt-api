@@ -15,6 +15,13 @@ export interface TriviaPayload {
   options: TriviaOption[];
 }
 
+export type TriviaForeignOption = Pick<TriviaOption, "text">;
+
+export type TriviaForeign = Pick<
+  Trivia,
+  "id" | "question" | "allowMultiple"
+> & { options: TriviaForeignOption[] };
+
 export interface Trivia extends Timestamps {
   id: string;
   challenge: IdName | null;
