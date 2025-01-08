@@ -1,6 +1,10 @@
 import { model, Schema } from "mongoose";
 import { ToObject } from "~/helpers/schema";
-import { UserChallenge, UserChallengeStatus } from "./types";
+import {
+  UserChallenge,
+  UserChallengeForeign,
+  UserChallengeStatus,
+} from "./types";
 import { ChallengeForeignSchema } from "../Challenge";
 import { UserPublicForeignSchema } from "../UserPublic";
 import { UserStageForeignSchema } from "../UserStage";
@@ -29,6 +33,15 @@ const UserChallenge = model(
   "UserChallenge",
   UserChallengeSchema,
   "usersChallenge"
+);
+
+export const UserChallengeForeignSchema = new Schema<UserChallengeForeign>(
+  {
+    id: { type: String, required: true },
+    challengeId: { type: String, required: true },
+    name: { type: String, required: true },
+  },
+  { _id: false }
 );
 
 export * from "./types";

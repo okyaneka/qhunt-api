@@ -1,3 +1,4 @@
+import { DefaultListParams } from "~/validators";
 import { Timestamps } from "..";
 import { ChallengeForeign, ChallengeType } from "../Challenge";
 import { UserPublicForeign } from "../UserPublic";
@@ -31,4 +32,9 @@ export interface UserChallenge extends Timestamps {
   status: UserChallengeStatus;
   score: number | null;
   contents: string[];
+}
+
+export interface UserChallengeParams extends DefaultListParams {
+  userStageId: string;
+  status: UserChallengeStatus | null;
 }
