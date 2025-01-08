@@ -8,17 +8,16 @@ import cookies from "~/configs/cookies";
 
 const AuthRoute = Router();
 
-AuthRoute.get("/profile", AuthMiddleware, async (req, res) => {
+AuthRoute.get("/profile", AuthMiddleware, async (req, res, next) => {
   const auth = res.locals.user;
 
-  const user = await UserService.detail(auth?.id as string).catch((err) => err);
+  const user = await UserService.detail(auth?.id as string).catch(
+    (err: Error) => err
+  );
 
-  if (user instanceof Error) {
-    res.status(401).json(response.error({}, user.message, 401));
-    return;
-  }
+  if (user instanceof Error) return next(user);
 
-  res.json(response.success(user.toObject()));
+  res.json(response.success(user));
 });
 
 AuthRoute.post(

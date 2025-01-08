@@ -68,10 +68,18 @@ export const detail = async (id: string) => {
   if (!user) throw new Error("user not found");
 
   const meta = await UserPublic.findOne({ "user.id": user._id }).catch(
-    () => {}
+    () => null
   );
 
-  return { ...user.toObject(), meta: meta?.toObject() };
+  return {
+    ...user.toObject(),
+    meta: meta?.toObject({
+      transform: (doc, ret) => {
+        const { _id, user, __v, ...data } = ret;
+        return { id: _id, ...data };
+      },
+    }),
+  };
 };
 
 export const update = async (id: string, payload: UserPayload) => {};
