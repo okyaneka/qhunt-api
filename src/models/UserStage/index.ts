@@ -1,37 +1,13 @@
 import { model, Schema } from "mongoose";
-import { UserStage, UserStageStatus } from "./types";
-import { PeriodSchema, ToObject } from "~/helpers/schema";
-
-const StageSettingsSchema = new Schema<UserStage["stage"]["settings"]>(
-  {
-    periode: { type: PeriodSchema, default: null },
-  },
-  { _id: false }
-);
-
-const StageSchema = new Schema<UserStage["stage"]>(
-  {
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    storyline: { type: [String], default: [] },
-    settings: { type: StageSettingsSchema, required: true },
-  },
-  { _id: false, versionKey: false }
-);
-
-const UserPublicSchema = new Schema<UserStage["userPublic"]>(
-  {
-    id: { type: String, required: true },
-    code: { type: String, required: true },
-    name: { type: String },
-  },
-  { _id: false }
-);
+import { UserStage, UserStageForeign, UserStageStatus } from "./types";
+import { ToObject } from "~/helpers/schema";
+import { StageForeignSchema } from "../Stage";
+import { UserPublicForeignSchema } from "../UserPublic";
 
 const UserStageSchema = new Schema<UserStage>(
   {
-    stage: { type: StageSchema, required: true },
-    userPublic: { type: UserPublicSchema, required: true },
+    stage: { type: StageForeignSchema, required: true },
+    userPublic: { type: UserPublicForeignSchema, required: true },
     status: {
       type: String,
       enum: Object.values(UserStageStatus),
@@ -49,5 +25,14 @@ UserStageSchema.set("toObject", ToObject);
 const UserStage = model("UserStage", UserStageSchema, "usersStage");
 
 export * from "./types";
+
+export const UserStageForeignSchema = new Schema<UserStageForeign>(
+  {
+    id: { type: String, required: true },
+    stageId: { type: String, required: true },
+    name: { type: String, required: true },
+  },
+  { _id: false }
+);
 
 export default UserStage;

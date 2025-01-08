@@ -14,12 +14,17 @@ export interface UserTriviaContent {
   options: Pick<TriviaOption, "text">[];
 }
 
+export interface UserTriviaResult {
+  answer: string;
+  score: number;
+  isCorrect: boolean;
+  feedback: string;
+}
+
 export interface UserTrivia {
   id: string;
   userPublic: Pick<UserPublic, "id" | "name" | "code">;
   userChallenge: UserTriviaChallenge;
-  content: UserTriviaContent;
-  answer: string | null;
-  point: number | null;
-  isDone: boolean;
+  trivia: UserTriviaContent;
+  results: UserTriviaResult | null;
 }

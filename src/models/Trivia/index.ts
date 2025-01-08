@@ -1,6 +1,11 @@
 import { model, Schema } from "mongoose";
 import { ToObject } from "~/helpers/schema";
-import { Trivia, TriviaOption } from "./types";
+import {
+  Trivia,
+  TriviaForeign,
+  TriviaForeignOption,
+  TriviaOption,
+} from "./types";
 import { ChallengeFeedbackSchema } from "../Challenge";
 import { idNameSchema } from "..";
 
@@ -31,5 +36,22 @@ TriviaSchema.set("toJSON", ToObject);
 const Trivia = model("Trivia", TriviaSchema);
 
 export * from "./types";
+
+export const TriviaForeignOptionSchema = new Schema<TriviaForeignOption>(
+  {
+    text: { type: String, required: true },
+  },
+  { _id: false }
+);
+
+export const TriviaForeignSchema = new Schema<TriviaForeign>(
+  {
+    id: { type: String, required: true },
+    question: { type: String, required: true },
+    allowMultiple: { type: Boolean, required: true },
+    options: { type: [TriviaForeignOptionSchema], required: true },
+  },
+  { _id: false }
+);
 
 export default Trivia;

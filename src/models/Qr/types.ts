@@ -24,6 +24,7 @@ export interface QrLocation {
 }
 
 export interface QrListQuery extends DefaultListParams {
+  code: string;
   status: QrStatus | null;
 }
 

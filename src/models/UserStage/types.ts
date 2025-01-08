@@ -1,7 +1,7 @@
-import { Periode } from "~/helpers/schema";
 import { Timestamps } from "..";
-import { UserPublic } from "../UserPublic";
+import { UserPublicForeign } from "../UserPublic";
 import { DefaultListParams } from "~/validators";
+import { StageForeign } from "../Stage";
 
 export enum UserStageStatus {
   OnGoing = "ongoing",
@@ -13,17 +13,6 @@ export interface UserStageListParams extends DefaultListParams {
   status: UserStageStatus | null;
 }
 
-export interface UserStageContentSettings {
-  periode: Periode | null;
-}
-
-export interface UserStageContent {
-  id: string;
-  name: string;
-  storyline: string[];
-  settings: UserStageContentSettings;
-}
-
 export interface UserStageForeign {
   id: string;
   stageId: string;
@@ -32,8 +21,8 @@ export interface UserStageForeign {
 
 export interface UserStage extends Timestamps {
   id: string;
-  userPublic: Pick<UserPublic, "id" | "name" | "code">;
-  stage: UserStageContent;
+  userPublic: UserPublicForeign;
+  stage: StageForeign;
   status: UserStageStatus;
   score: number | null;
   contents: string[];

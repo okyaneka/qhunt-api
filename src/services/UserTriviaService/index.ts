@@ -2,6 +2,17 @@ import Trivia from "~/models/Trivia";
 import { UserChallengeForeign } from "~/models/UserChallenge";
 import { UserPublicForeign } from "~/models/UserPublic";
 import UserTrivia from "~/models/UserTrivia";
+import { TriviaForeignValidator } from "~/validators/TriviaValidator";
+
+export const verify = async (triviaId: string, TID: string) => {
+  const item = await UserTrivia.findOne({
+    "userPublic.code": TID,
+    "trivia.id": triviaId,
+    deletedAt: null,
+  });
+  if (!item) throw new Error("user challenge is undiscovered");
+  return item;
+};
 
 export const setup = async (
   userPublic: UserPublicForeign,
@@ -12,23 +23,20 @@ export const setup = async (
 
   const payload = trivias
     .map((item) => item.toObject())
-    .map((item) => {
-      return UserTrivia.findOneAndUpdate(
-        { "content.id": item.id },
-        {
-          $setOnInsert: {
-            userPublic,
-            userChallenge,
-            content: {
-              id: item.id,
-              question: item.question,
-              options: item.options.map(({ text }) => ({ text })),
-              allowMultiple: item.allowMultiple,
-            },
-          },
-        },
-        { new: true, upsert: true }
+    .map(async (item) => {
+      const trivia = await TriviaForeignValidator.validateAsync(item, {
+        stripUnknown: true,
+      });
+      const userTrivia = await verify(trivia.id, userPublic.code).catch(
+        () => null
       );
+      if (userTrivia) return userTrivia;
+
+      return await UserTrivia.create({
+        userPublic,
+        userChallenge,
+        trivia,
+      });
     });
 
   const items = await Promise.all(payload);
@@ -36,6 +44,22 @@ export const setup = async (
   return items.map((item) => item.toObject().id);
 };
 
-const UserTriviaService = { setup };
+export const details = async (ids: string[], TID: string) => {
+  const data = await UserTrivia.find({
+    _id: { $in: ids },
+    "userPublic.code": TID,
+  });
+
+  return data.map((item) =>
+    item.toObject({
+      transform: (doc, ret) => {
+        const { _id, __v, userPublic, ...rest } = ret;
+        return { id: _id, ...rest };
+      },
+    })
+  );
+};
+
+const UserTriviaService = { setup, details } as const;
 
 export default UserTriviaService;

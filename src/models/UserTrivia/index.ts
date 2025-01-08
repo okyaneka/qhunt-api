@@ -1,51 +1,26 @@
 import { model, Schema } from "mongoose";
-import { UserTrivia } from "./types";
+import { UserTrivia, UserTriviaResult } from "./types";
 import { ToObject } from "~/helpers/schema";
+import { UserPublicForeignSchema } from "../UserPublic";
+import { UserChallengeForeignSchema } from "../UserChallenge";
+import { TriviaForeignSchema } from "../Trivia";
 
-const ChallengeSchema = new Schema<UserTrivia["userChallenge"]>(
+const UserTriviaResultSchema = new Schema<UserTriviaResult>(
   {
-    id: { type: String, required: true },
-    challengeId: { type: String, required: true },
-    name: { type: String, required: true },
+    answer: { type: String, required: true },
+    feedback: { type: String, default: "" },
+    isCorrect: { type: Boolean, required: true },
+    score: { type: Number, required: true },
   },
-  { _id: false, versionKey: false }
-);
-
-const UserPublicSchema = new Schema<UserTrivia["userPublic"]>(
-  {
-    id: { type: String, required: true },
-    code: { type: String, required: true },
-    name: { type: String, default: "" },
-  },
-  { _id: false, versionKey: false }
-);
-
-const TriviaOption = new Schema<UserTrivia["content"]["options"][number]>(
-  {
-    text: { type: String, required: true },
-  },
-  { _id: false, versionKey: false }
-);
-
-const TriviaContentSchema = new Schema<UserTrivia["content"]>(
-  {
-    id: { type: String, required: true },
-    question: { type: String, required: true },
-    options: { type: [TriviaOption], required: true },
-    allowMultiple: { type: Boolean, default: false },
-  },
-
-  { _id: false, versionKey: false }
+  { _id: false }
 );
 
 const UserTriviaSchema = new Schema<UserTrivia>(
   {
-    userPublic: { type: UserPublicSchema, required: true },
-    userChallenge: { type: ChallengeSchema, required: true },
-    content: { type: TriviaContentSchema, required: true },
-    answer: { type: String, default: null },
-    isDone: { type: Boolean, default: false },
-    point: { type: Number, default: null },
+    userPublic: { type: UserPublicForeignSchema, required: true },
+    userChallenge: { type: UserChallengeForeignSchema, required: true },
+    trivia: { type: TriviaForeignSchema, required: true },
+    results: { type: UserTriviaResultSchema, default: null },
   },
   { timestamps: true }
 );

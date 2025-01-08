@@ -1,6 +1,6 @@
 import { ValidationError } from "joi";
 
-const success = (data: any = null, message: string = "success") => {
+export const success = (data: any = null, message: string = "success") => {
   return {
     code: 200,
     message,
@@ -9,7 +9,11 @@ const success = (data: any = null, message: string = "success") => {
   };
 };
 
-const error = (error: any = null, message: string = "", code: number = 400) => {
+export const error = (
+  error: any = null,
+  message: string = "",
+  code: number = 400
+) => {
   return {
     code,
     message,
@@ -18,7 +22,7 @@ const error = (error: any = null, message: string = "", code: number = 400) => {
   };
 };
 
-const errorValidation = (error: ValidationError) => {
+export const errorValidation = (error: ValidationError) => {
   const validation = error?.details.reduce((car, cur) => {
     return { ...car, [cur.context?.key as string]: cur.message };
   }, {});

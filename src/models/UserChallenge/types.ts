@@ -1,30 +1,21 @@
+import { DefaultListParams } from "~/validators";
 import { Timestamps } from "..";
-import { ChallengeType } from "../Challenge";
-import { UserPublic } from "../UserPublic";
+import { ChallengeForeign, ChallengeType } from "../Challenge";
+import { UserPublicForeign } from "../UserPublic";
+import { UserStageForeign } from "../UserStage";
 
-export enum UserChallengeState {
-  Storyline = "storyline",
-  Content = "content",
-  Progress = "progress",
-  Result = "result",
-}
+// export enum UserChallengeState {
+//   Storyline = "storyline",
+//   Content = "content",
+//   Progress = "progress",
+//   Result = "result",
+// }
 
-export interface UserChallengeStage {
-  id: string;
-  stageId: string;
-  name: string;
-}
-
-export interface UserChallengeContentSettings {
-  duration: number;
-  type: ChallengeType;
-}
-
-export interface UserChallengeContent {
-  id: string;
-  name: string;
-  storyline: string[];
-  settings: UserChallengeContentSettings;
+export enum UserChallengeStatus {
+  Undiscovered = "undiscovered",
+  OnGoing = "ongoing",
+  Completed = "completed",
+  Failed = "failed",
 }
 
 export interface UserChallengeForeign {
@@ -35,11 +26,15 @@ export interface UserChallengeForeign {
 
 export interface UserChallenge extends Timestamps {
   id: string;
-  userPublic: Pick<UserPublic, "id" | "name" | "code">;
-  stage: UserChallengeStage | null;
-  challenge: UserChallengeContent;
-  founded: boolean;
-  state: UserChallengeState;
+  challenge: ChallengeForeign;
+  userStage: UserStageForeign | null;
+  userPublic: UserPublicForeign;
+  status: UserChallengeStatus;
   score: number | null;
   contents: string[];
+}
+
+export interface UserChallengeParams extends DefaultListParams {
+  userStageId: string;
+  status: UserChallengeStatus | null;
 }
