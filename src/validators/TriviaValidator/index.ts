@@ -1,6 +1,11 @@
 import Joi from "joi";
 import schema from "~/helpers/schema";
-import { TriviaOption, TriviaPayload } from "~/models/Trivia";
+import {
+  TriviaForeign,
+  TriviaForeignOption,
+  TriviaOption,
+  TriviaPayload,
+} from "~/models/Trivia";
 import { ChallengeFeedbackValidator } from "~/validators/ChallengeValidator";
 
 export const TriviaOptionValidator = schema.generate<TriviaOption>({
@@ -36,4 +41,15 @@ export const TriviaItemsPayloadValidator = schema.generate<{
   items: schema.array(TriviaPayloadValidator, {
     required: true,
   }),
+});
+
+const TriviaForeignOptionValidator = schema.generate<TriviaForeignOption>({
+  text: schema.string({ required: true }),
+});
+
+export const TriviaForeignValidator = schema.generate<TriviaForeign>({
+  id: schema.string({ required: true }),
+  question: schema.string({ required: true }),
+  allowMultiple: schema.boolean({ required: true }),
+  options: schema.array(TriviaForeignOptionValidator, { required: true }),
 });
