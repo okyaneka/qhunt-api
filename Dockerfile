@@ -5,7 +5,7 @@ ARG MONGO_DB_NAME
 ARG JWT_SECRET
 ARG APP_URL
 
-FROM node:20-alpine
+FROM --platform=linux/amd64 node:20-alpine
 
 WORKDIR /usr/src/app
 
