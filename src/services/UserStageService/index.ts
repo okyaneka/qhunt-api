@@ -1,13 +1,8 @@
-import db from "~/helpers/db";
 import StageService from "../StageService";
 import UserChallengeService from "../UserChallengeService";
 import UserPublicService from "../UserPublicService";
-import UserStage, {
-  UserStage as IUserStage,
-  UserStageListParams,
-} from "~/models/UserStage";
+import UserStage, { UserStageListParams } from "~/models/UserStage";
 import { StageForeignValidator } from "~/validators/StageValidator";
-import { UserChallenge } from "~/models/UserChallenge";
 import { UserPublicForeignValidator } from "~/validators/UserPublicValidator";
 
 export const verify = async (code: string, stageId: string) => {
