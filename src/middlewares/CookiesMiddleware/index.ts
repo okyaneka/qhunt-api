@@ -1,20 +1,22 @@
-import { enc, lib, SHA256 } from "crypto-js";
-import { RequestHandler } from "express";
 import cookies from "~/configs/cookies";
-import { UserPublicService } from "~/services";
+import { RequestHandler } from "express";
+import { UserPublicService } from "qhunt-lib/services";
+import { UserPublic } from "qhunt-lib/models/UserPublicModel";
 
 const CookiesMiddleware: RequestHandler = async (req, res, next) => {
-  const timestamp = Date.now();
-  const salt = lib.WordArray.random(4).toString(enc.Hex);
-  const TID: string =
-    req.cookies.TID || SHA256(`${timestamp}${salt}`).toString(enc.Hex);
-  res.cookie(cookies.TID, TID, {
-    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3),
-  });
+  const TID = req.cookies[cookies.TID];
 
-  await UserPublicService.sync(TID);
-  res.locals.TID = TID;
+  let user: UserPublic | null = null;
 
+  if (TID) {
+    user = await UserPublicService.verify(TID).catch(() => null);
+    if (!user) res.clearCookie(cookies.TID);
+  }
+
+  if (!user) user = await UserPublicService.setup();
+
+  res.cookie(cookies.TID, user.code);
+  res.locals.TID = user.code;
   next();
 };
 

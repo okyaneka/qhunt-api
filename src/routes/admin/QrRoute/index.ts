@@ -1,12 +1,12 @@
 import { Router } from "express";
-import QrService from "~/services/QrService";
-import response from "~/helpers/response";
+import { QrService } from "qhunt-lib/services";
+import { response } from "qhunt-lib/helpers";
 import {
   QrDeleteBulkPayloadValidator,
   QrGeneratePayloadValidator,
-  QrListQueryValidator,
+  QrListParamsValidator,
   QrUpdatePayloadValidator,
-} from "~/validators/QrValidator";
+} from "qhunt-lib/validators/QrValidator";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 
@@ -25,9 +25,9 @@ QrRoute.use(AuthMiddleware);
 
 QrRoute.get(
   path.list,
-  ValidationMiddleware({ query: QrListQueryValidator }),
+  ValidationMiddleware({ query: QrListParamsValidator }),
   async (req, res) => {
-    const { value } = QrListQueryValidator.validate(req.query);
+    const { value } = QrListParamsValidator.validate(req.query);
     const data = await QrService.list(value);
 
     res.json(response.success(data));

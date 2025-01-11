@@ -1,10 +1,11 @@
 import { Router } from "express";
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
-import { UserPayloadValidator } from "~/validators/UserValidator";
-import UserService from "~/services/UserService";
+import { UserPayloadValidator } from "qhunt-lib/validators/UserValidator";
+import { UserService } from "qhunt-lib/services";
 import cookies from "~/configs/cookies";
+import { env } from "~/configs";
 
 const AuthRoute = Router();
 
@@ -26,7 +27,9 @@ AuthRoute.post(
   async (req, res) => {
     const { value } = UserPayloadValidator.validate(req.body);
 
-    const data = await UserService.login(value).catch((err) => err);
+    const data = await UserService.login(value, env.JWT_SECRET).catch(
+      (err) => err
+    );
 
     if (data instanceof Error) {
       res.status(400).json(response.error({}, data.message));

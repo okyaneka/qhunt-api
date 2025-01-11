@@ -1,8 +1,8 @@
 import { Router } from "express";
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 import { ValidationMiddleware } from "~/middlewares";
-import UserStageService from "~/services/UserStageService";
-import { UserStageListParamsValidator } from "~/validators/UserStageValidator";
+import { UserStageService } from "qhunt-lib/services";
+import { UserStageListParamsValidator } from "qhunt-lib/validators/UserStageValidator";
 
 const path = { list: "/list", detail: "/:id/detail" } as const;
 

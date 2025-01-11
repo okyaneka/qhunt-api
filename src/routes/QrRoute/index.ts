@@ -1,6 +1,6 @@
 import { Router } from "express";
-import response from "~/helpers/response";
-import { QrService } from "~/services";
+import { response } from "qhunt-lib/helpers";
+import { QrService } from "qhunt-lib/services";
 
 const path = {
   verify: "/verify/:code",

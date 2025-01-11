@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { Schema } from "joi";
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 
 type Validators = {
   body?: Schema;
