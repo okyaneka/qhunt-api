@@ -1,8 +1,8 @@
 import { Router } from "express";
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 import { ValidationMiddleware } from "~/middlewares";
-import UserChallengeService from "~/services/UserChallengeService";
-import { UserChallengeParamsValidator } from "~/validators/UserChallengeValidator";
+import { UserChallengeService } from "qhunt-lib/services";
+import { UserChallengeParamsValidator } from "qhunt-lib/validators/UserChallengeValidator";
 
 const path = {
   list: "/list",

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { NextFunction, ErrorRequestHandler, Response, Request } from "express";
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 
 const logPath = path.join(__dirname, "../../../logs/error.log");
 

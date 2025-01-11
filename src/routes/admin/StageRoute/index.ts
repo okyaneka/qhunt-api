@@ -1,11 +1,11 @@
 import { Router } from "express";
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 import { AuthMiddleware, ValidationMiddleware } from "~/middlewares";
-import StageService from "~/services/StageService";
+import { StageService } from "qhunt-lib/services";
 import {
   StagePayloadValidator,
   StageListParamsValidator,
-} from "~/validators/StageValidator";
+} from "qhunt-lib/validators/StageValidator";
 
 const path = {
   list: "/list",

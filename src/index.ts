@@ -1,14 +1,15 @@
 import express from "express";
-import { ENV, mongodb } from "~/configs";
 import { ErrorMiddleware, LogMiddleware } from "~/middlewares";
 import routes from "~/routes";
-import response from "~/helpers/response";
 import plugins from "./plugins";
+import mongoose from "./plugins/mongoose";
+import { env } from "./configs";
+import { response } from "qhunt-lib/helpers";
 
 const app = express();
-const port = ENV.PORT;
+const port = env.PORT;
 
-mongodb();
+mongoose();
 
 app.use(LogMiddleware);
 

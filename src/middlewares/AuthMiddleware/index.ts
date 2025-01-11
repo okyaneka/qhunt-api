@@ -1,8 +1,8 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 import { decode, verify } from "jsonwebtoken";
-import { ENV } from "~/configs";
-import UserService from "~/services/UserService";
+import { env } from "~/configs";
+import { UserService } from "qhunt-lib/services";
 
 const AuthMiddleware: RequestHandler = async (
   req: Request,
@@ -17,7 +17,7 @@ const AuthMiddleware: RequestHandler = async (
 
   const token = bearer?.split(" ")[1];
 
-  verify(token, ENV.JWT_SECRET, (err) => {
+  verify(token, env.JWT_SECRET, (err) => {
     if (err) {
       res.status(401).json(response.error({}, err.message, 401));
       return;

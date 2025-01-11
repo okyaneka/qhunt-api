@@ -1,14 +1,10 @@
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 import { Router } from "express";
 import { AuthMiddleware, ValidationMiddleware } from "~/middlewares";
-import ChallengeService from "~/services/ChallengeService";
-import TriviaService from "~/services/TriviaService";
-import { ChallengeType } from "~/models/Challenge";
-import {
-  ChallengeListParamsValidator,
-  ChallengePayloadValidator,
-} from "~/validators/ChallengeValidator";
-import { TriviaItemsPayloadValidator } from "~/validators/TriviaValidator";
+import { ChallengeService, TriviaService } from "qhunt-lib/services";
+import { ChallengeType } from "qhunt-lib/models/ChallengeModel";
+import { ChallengeListParamsValidator } from "qhunt-lib/validators/ChallengeValidator";
+import { TriviaItemsPayloadValidator } from "qhunt-lib/validators/TriviaValidator";
 
 const ChallengeRoute = Router();
 
@@ -36,36 +32,36 @@ ChallengeRoute.get(
   }
 );
 
-ChallengeRoute.post(
-  path.create,
-  ValidationMiddleware({ body: ChallengePayloadValidator }),
-  async (req, res) => {
-    const { value } = ChallengePayloadValidator.validate(req.body);
+// ChallengeRoute.post(
+//   path.create,
+//   ValidationMiddleware({ body: ChallengePayloadValidator }),
+//   async (req, res) => {
+//     const { value } = ChallengePayloadValidator.validate(req.body);
 
-    const item = await ChallengeService.create(value).catch(
-      (err: Error) => err
-    );
+//     const item = await ChallengeService.create(value).catch(
+//       (err: Error) => err
+//     );
 
-    if (item instanceof Error) {
-      res.status(400).json(response.error(item.message));
-      return;
-    }
+//     if (item instanceof Error) {
+//       res.status(400).json(response.error(item.message));
+//       return;
+//     }
 
-    res.json(response.success(item));
-  }
-);
+//     res.json(response.success(item));
+//   }
+// );
 
-ChallengeRoute.get(path.detail, async (req, res) => {
-  const id = req.params.id;
+// ChallengeRoute.get(path.detail, async (req, res) => {
+//   const id = req.params.id;
 
-  const item = await ChallengeService.detail(id).catch((err: Error) => err);
-  if (item instanceof Error) {
-    res.status(400).json(response.error(item.message));
-    return;
-  }
+//   const item = await ChallengeService.detail(id).catch((err: Error) => err);
+//   if (item instanceof Error) {
+//     res.status(400).json(response.error(item.message));
+//     return;
+//   }
 
-  res.json(response.success(item));
-});
+//   res.json(response.success(item));
+// });
 
 ChallengeRoute.get(path.detailContent, async (req, res) => {
   const id = req.params.id;
@@ -87,26 +83,26 @@ ChallengeRoute.get(path.detailContent, async (req, res) => {
   }
 });
 
-ChallengeRoute.put(
-  path.update,
-  ValidationMiddleware({ body: ChallengePayloadValidator }),
-  async (req, res) => {
-    const { value } = ChallengePayloadValidator.validate(req.body);
+// ChallengeRoute.put(
+//   path.update,
+//   ValidationMiddleware({ body: ChallengePayloadValidator }),
+//   async (req, res) => {
+//     const { value } = ChallengePayloadValidator.validate(req.body);
 
-    const id = req.params.id;
+//     const id = req.params.id;
 
-    const item = await ChallengeService.update(id, value).catch(
-      (err: Error) => err
-    );
+//     const item = await ChallengeService.update(id, value).catch(
+//       (err: Error) => err
+//     );
 
-    if (item instanceof Error) {
-      res.status(400).json(response.error(item.message));
-      return;
-    }
+//     if (item instanceof Error) {
+//       res.status(400).json(response.error(item.message));
+//       return;
+//     }
 
-    res.json(response.success(item));
-  }
-);
+//     res.json(response.success(item));
+//   }
+// );
 
 ChallengeRoute.put(path.updateContent, async (req, res, next) => {
   const id = req.params.id;
