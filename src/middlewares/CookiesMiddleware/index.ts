@@ -1,19 +1,22 @@
 import cookies from "~/configs/cookies";
 import { RequestHandler } from "express";
 import { UserPublicService } from "qhunt-lib/services";
+import { UserPublic } from "qhunt-lib/models/UserPublicModel";
 
 const CookiesMiddleware: RequestHandler = async (req, res, next) => {
   const TID = req.cookies[cookies.TID];
+
+  let user: UserPublic | null = null;
+
   if (TID) {
-    const user = await UserPublicService.verify(TID).catch(() => null);
-    if (user) return next();
-    res.clearCookie(cookies.TID);
+    user = await UserPublicService.verify(TID).catch(() => null);
+    if (!user) res.clearCookie(cookies.TID);
   }
 
-  const user = await UserPublicService.setup();
+  if (!user) user = await UserPublicService.setup();
+
   res.cookie(cookies.TID, user.code);
   res.locals.TID = user.code;
-
   next();
 };
 
