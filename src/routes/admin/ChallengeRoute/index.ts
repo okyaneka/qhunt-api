@@ -6,10 +6,6 @@ import { ChallengeType } from "qhunt-lib/models/ChallengeModel";
 import { ChallengeListParamsValidator } from "qhunt-lib/validators/ChallengeValidator";
 import { TriviaItemsPayloadValidator } from "qhunt-lib/validators/TriviaValidator";
 
-const ChallengeRoute = Router();
-
-ChallengeRoute.use(AuthMiddleware);
-
 const path = {
   list: "/list",
   create: "/create",
@@ -19,6 +15,10 @@ const path = {
   updateContent: "/update/:id/content",
   delete: "/delete/:id",
 } as const;
+
+const ChallengeRoute = Router();
+
+ChallengeRoute.use(AuthMiddleware);
 
 ChallengeRoute.get(
   path.list,
