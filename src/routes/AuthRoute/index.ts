@@ -38,9 +38,7 @@ AuthRoute.post(
 
     const { TID, ...user } = data;
 
-    res.cookie(cookies.TID, TID, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3),
-    });
+    res.cookie(cookies.TID, TID, cookies.options);
 
     res.json(response.success(user));
   }

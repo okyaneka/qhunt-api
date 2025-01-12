@@ -15,8 +15,10 @@ const CookiesMiddleware: RequestHandler = async (req, res, next) => {
 
   if (!user) user = await UserPublicService.setup();
 
-  res.cookie(cookies.TID, user.code);
+  res.cookie(cookies.TID, user.code, cookies.options);
   res.locals.TID = user.code;
+
+  console.log(user.code);
   next();
 };
 
