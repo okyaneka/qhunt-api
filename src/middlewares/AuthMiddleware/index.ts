@@ -31,7 +31,7 @@ const AuthMiddleware: RequestHandler = async (
     return;
   }
 
-  res.cookie(cookies.TID, user.meta.code);
+  res.cookie(cookies.TID, user.meta.code, cookies.options);
   res.locals.TID = user.meta.code;
   res.locals.user = { id: user.id, role: user.role };
 
