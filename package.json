@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node -r ts-node/register -r tsconfig-paths/register dist/index.js",
+    "seed": "ts-node -r tsconfig-paths/register _seeders/index.ts",
     "dev": "nodemon",
     "build": "tsc"
   },
@@ -14,11 +15,12 @@
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "qhunt-lib": "link:../qhunt-lib"
+    "qhunt-lib": "github:okyaneka/qhunt-lib"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
