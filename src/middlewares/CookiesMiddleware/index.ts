@@ -18,7 +18,6 @@ const CookiesMiddleware: RequestHandler = async (req, res, next) => {
   res.cookie(cookies.TID, user.code, cookies.options);
   res.locals.TID = user.code;
 
-  console.log(user.code);
   next();
 };
 

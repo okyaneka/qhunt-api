@@ -9,7 +9,7 @@ const plugins = (app: Express) => {
   app.use(CookiesMiddleware);
   app.use(
     cors({
-      origin: /^http:\/\/localhost:\d+$/,
+      origin: /^https?:\/\/localhost:\d+$/,
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
     })
