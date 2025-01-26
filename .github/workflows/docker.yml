@@ -27,6 +27,12 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
           registry: ghcr.io
 
+      - name: Read Markdown Description
+        id: read_markdown
+        run: |
+          description=$(cat README.md)  
+          echo "::set-output name=description::$description"
+
       - name: Build and push Docker
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991
         with:
@@ -38,5 +44,5 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/qhunt-api:latest
             ghcr.io/${{ github.repository_owner }}/qhunt-api:${{ github.sha }}
           outputs: |
-            type=image,name=target,annotation-index.org.opencontainers.image.description=QHunt Api Image
+            type=image,name=target,annotation-index.org.opencontainers.image.description="${{ steps.read_markdown.outputs.description }}"
           push: true
