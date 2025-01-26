@@ -25,19 +25,16 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
           registry: ghcr.io
 
-      - name: Build and push Docker images for multiple architectures
-        run: |
-          docker buildx create --use
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            --build-arg NODE_ENV="${{ env.NODE_ENV }}" \
-            --build-arg PORT="${{ env.PORT }}" \
-            --build-arg MONGO_URI="${{ env.MONGO_URI }}" \
-            --build-arg MONGO_DB_NAME="${{ env.MONGO_DB_NAME }}" \
-            --build-arg THROTTLE_TIME="${{ env.THROTTLE_TIME }}" \
-            --build-arg THROTTLE_COUNT="${{ env.THROTTLE_COUNT }}" \
-            --build-arg JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-            --build-arg APP_URL="${{ env.APP_URL }}" \
-            -t ghcr.io/${{ github.repository_owner }}/qhunt-api:${{ github.sha }} \
-            -t ghcr.io/${{ github.repository_owner }}/qhunt-api:latest \
-            --push .
+      - name: Build and push Docker
+        uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991
+        with:
+          context: .
+          platform: linux/amd64,linux/arm64
+          build-args: |
+            NODE_ENV="${{ env.NODE_ENV }}"
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/qhunt-api:${{ github.sha }} 
+            ghcr.io/${{ github.repository_owner }}/qhunt-api:latest 
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          push: true
