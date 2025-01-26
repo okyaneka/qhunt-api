@@ -27,13 +27,12 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
           registry: ghcr.io
 
-      - name: Get Description
-        id: get_description
-        run: |
-          description=$(cat README.md)
-          echo "description=$description" >> $GITHUB_OUTPUT
+      # - name: Get Description
+      #   id: get_description
+      #   run: |
+      #     description=$(cat README.md)
+      #     echo "description=$description" >> $GITHUB_OUTPUT
           
-        # description=$(sed 's/[^a-zA-Z0-9[:space:]]/\\&/g' README.md | while IFS= read -r line; do printf "%s\\\n" "$line"; done)
       - name: Build and push Docker
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991
         with:
@@ -45,5 +44,5 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/qhunt-api:latest
             ghcr.io/${{ github.repository_owner }}/qhunt-api:${{ github.sha }}
           outputs: |
-            type=image,name=target,annotation-index.org.opencontainers.image.description=${{ steps.get_description.outputs.description }}
+            type=image,name=target,annotation-index.org.opencontainers.image.description=# Judul \n ## Sek nyoba
           push: true
