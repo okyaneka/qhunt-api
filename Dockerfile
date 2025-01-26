@@ -1,11 +1,12 @@
-ARG NODE_ENV
-ARG PORT
+ARG NODE_ENV=production
+ARG PORT=3000
 ARG MONGO_URI
 ARG MONGO_DB_NAME
 ARG JWT_SECRET
 ARG APP_URL
 
-FROM --platform=linux/amd64 node:20-alpine
+# stage build
+FROM node:20-alpine AS build
 
 WORKDIR /usr/src/app
 
@@ -18,13 +19,25 @@ COPY . .
 
 RUN pnpm run build
 
+# Stage 2
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/package.json .
+COPY --from=build /usr/src/app/pnpm-lock.yaml .
+COPY --from=build /usr/src/app/tsconfig.json .
+COPY --from=build /usr/src/app/dist ./dist
+RUN npm install -g pnpm
+RUN pnpm install
+
 ENV NODE_ENV=${NODE_ENV}
 ENV PORT=${PORT}
+ENV APP_URL=${APP_URL}
 ENV MONGO_URI=${MONGO_URI}
 ENV MONGO_DB_NAME=${MONGO_DB_NAME}
 ENV JWT_SECRET=${JWT_SECRET}
-ENV APP_URL=${APP_URL}
 
-EXPOSE 3000
+EXPOSE ${PORT}
 
 CMD ["pnpm", "start"]
