@@ -1,9 +1,10 @@
 import RateLimit from "express-rate-limit";
+import { env } from "~/configs";
 
 const limiter = () =>
   RateLimit({
-    windowMs: 60 * 1e3,
-    max: 30,
+    windowMs: env.THROTTLE_TIME * 1e3,
+    max: env.THROTTLE_COUNT,
   });
 
 export default limiter;
