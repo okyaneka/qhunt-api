@@ -1,10 +1,23 @@
-import { Express } from "express";
 import LogMiddleware from "./LogMiddleware";
 import ErrorMiddleware from "./ErrorMiddleware";
+import AuthMiddleware from "./AuthMiddleware";
+import ValidationMiddleware from "./ValidationMiddleware";
+import CookiesMiddleware from "./CookiesMiddleware";
 
-const middleware = (app: Express) => {
-  app.use(ErrorMiddleware);
-  app.use(LogMiddleware);
+export {
+  AuthMiddleware,
+  CookiesMiddleware,
+  ErrorMiddleware,
+  LogMiddleware,
+  ValidationMiddleware,
 };
 
-export default middleware;
+const middlewares = {
+  AuthMiddleware,
+  CookiesMiddleware,
+  ErrorMiddleware,
+  LogMiddleware,
+  ValidationMiddleware,
+};
+
+export default middlewares;

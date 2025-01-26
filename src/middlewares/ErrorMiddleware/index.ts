@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { NextFunction, ErrorRequestHandler, Response, Request } from "express";
-import response from "~/helpers/response";
+import { response } from "qhunt-lib/helpers";
 
-const logPath = path.join(__dirname, "../../logs/error.log");
+const logPath = path.join(__dirname, "../../../logs/error.log");
 
 const logsDir = path.dirname(logPath);
 if (!fs.existsSync(logsDir)) {
@@ -16,7 +16,6 @@ const ErrorMiddleware: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("P");
   const timestamp = new Date().toISOString();
   const method = req.method;
   const path = req.path;
@@ -30,7 +29,7 @@ const ErrorMiddleware: ErrorRequestHandler = (
   });
 
   console.error(err.stack);
-  res.status(500).json(response.error(null, err.message, 500));
+  res.status(400).json(response.error({}, err.message, 400));
 };
 
 export default ErrorMiddleware;
