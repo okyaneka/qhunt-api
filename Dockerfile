@@ -16,7 +16,7 @@ RUN pnpm run build
 FROM node:20-alpine
 
 LABEL org.opencontainers.image.source=https://github.com/okyaneka/qhunt-api
-LABEL org.opencontainers.image.description="QHunt API Image"
+LABEL org.opencontainers.image.description="QHunt Api Image"
 
 WORKDIR /usr/src/app
 
