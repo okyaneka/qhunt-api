@@ -30,9 +30,10 @@ jobs:
       - name: Get Description
         id: get_description
         run: |
-          description=$(sed 's/[^a-zA-Z0-9[:space:]]/\\&/g' README.md | while IFS= read -r line; do printf "%s\\\n" "$line"; done)
+          description=$(cat README.md)
           echo "description=$description" >> $GITHUB_OUTPUT
-
+          
+        # description=$(sed 's/[^a-zA-Z0-9[:space:]]/\\&/g' README.md | while IFS= read -r line; do printf "%s\\\n" "$line"; done)
       - name: Build and push Docker
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991
         with:
