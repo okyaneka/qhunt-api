@@ -15,9 +15,13 @@ RUN pnpm run build
 # Stage 2
 FROM node:20-alpine
 
-ARG NODE_ENV=production
+LABEL org.opencontainers.image.source=https://github.com/okyaneka/qhunt-api
+LABEL org.opencontainers.image.description="QHunt API Image"
 
 WORKDIR /usr/src/app
+
+ARG NODE_ENV=production
+ARG PORT=3000
 
 COPY --from=build /usr/src/app/package.json .
 COPY --from=build /usr/src/app/pnpm-lock.yaml .
@@ -27,9 +31,6 @@ RUN npm install -g pnpm
 RUN pnpm install
 
 ENV NODE_ENV=${NODE_ENV}
-
-LABEL org.opencontainers.image.source https://github.com/okyaneka/qhunt-api
-LABEL org.opencontainers.image.description "QHunt API Image"
 
 EXPOSE ${PORT}
 
