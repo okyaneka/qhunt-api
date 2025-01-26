@@ -30,7 +30,7 @@ jobs:
       - name: Read Markdown Description
         id: read_markdown
         run: |
-          description=$(cat README.md)  
+          description=$(cat README.md | jq -Rs .)
           echo "::set-output name=description::$description"
 
       - name: Build and push Docker
