@@ -39,4 +39,5 @@ jobs:
             --build-arg JWT_SECRET="${{ secrets.JWT_SECRET }}" \
             --build-arg APP_URL="${{ env.APP_URL }}" \
             -t ghcr.io/${{ github.repository_owner }}/qhunt-api:${{ github.sha }} \
+            -t ghcr.io/${{ github.repository_owner }}/qhunt-api:latest \
             --push .
