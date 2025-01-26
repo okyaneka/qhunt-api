@@ -16,12 +16,6 @@ RUN pnpm run build
 FROM node:20-alpine
 
 ARG NODE_ENV=production
-ARG PORT=3000
-ARG MONGO_URI
-ARG MONGO_DB_NAME
-ARG THROTTLE_TIME
-ARG THROTTLE_COUNT
-ARG APP_URL
 
 WORKDIR /usr/src/app
 
@@ -33,12 +27,9 @@ RUN npm install -g pnpm
 RUN pnpm install
 
 ENV NODE_ENV=${NODE_ENV}
-ENV PORT=${PORT}
-ENV MONGO_URI=${MONGO_URI}
-ENV MONGO_DB_NAME=${MONGO_DB_NAME}
-ENV THROTTLE_TIME=${THROTTLE_TIME}
-ENV THROTTLE_COUNT=${THROTTLE_COUNT}
-ENV APP_URL=${APP_URL}
+
+LABEL org.opencontainers.image.source https://github.com/okyaneka/qhunt-api
+LABEL org.opencontainers.image.description "QHunt API Image"
 
 EXPOSE ${PORT}
 

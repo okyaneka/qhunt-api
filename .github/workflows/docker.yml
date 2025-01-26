@@ -37,7 +37,4 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/qhunt-api:latest
             ghcr.io/${{ github.repository_owner }}/qhunt-api:${{ github.sha }}
-          labels: |
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.description=QHunt API Image
           push: true
