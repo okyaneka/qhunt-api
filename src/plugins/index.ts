@@ -3,8 +3,10 @@ import { Express, json } from "express";
 import { CookiesMiddleware } from "~/middlewares";
 import cors from "cors";
 import limiter from "./limiter";
+import mongoose from "./mongoose";
 
 const plugins = (app: Express) => {
+  mongoose();
   app.use(limiter());
   app.use(json());
   app.use(cookieParser());
