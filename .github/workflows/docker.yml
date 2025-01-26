@@ -44,5 +44,5 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/qhunt-api:latest
             ghcr.io/${{ github.repository_owner }}/qhunt-api:${{ github.sha }}
           outputs: |
-            type=image,name=target,annotation-index.org.opencontainers.image.description=# Judul \n ## Sek nyoba
+            type=image,name=target,annotation-index.org.opencontainers.image.description=\# QHUNT API\n\n\#\# Run\n\n\`\`\`bash\n\# install\npnpm install\n\n\# run\n\# dont forget to config the hosts\ndocker compose up \-d\n\npnpm dev\n\n\# build\npnpm build\n\n\# start\npnpm start\n\`\`\`\n\n\#\# Docker\n\nYou can create bash script from this\n\n\`\`\`bash\nsha\=\$\(git rev\-parse HEAD\)\ntag\=\"ghcr\.io\/okyaneka\/qhunt\-api\:\$\{sha\}\"\ndocker build \-t \$tag \.\ndocker push \$tag\necho \"\$tag success\"\n\`\`\`\n
           push: true
