@@ -4,6 +4,7 @@ import { CookiesMiddleware } from "~/middlewares";
 import cors from "cors";
 import limiter from "./limiter";
 import mongoose from "./mongoose";
+import { env } from "~/configs";
 
 const plugins = (app: Express) => {
   mongoose();
@@ -13,7 +14,7 @@ const plugins = (app: Express) => {
   app.use(CookiesMiddleware);
   app.use(
     cors({
-      origin: /^https?:\/\/localhost:\d+$/,
+      origin: env.APP_URL,
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
     })
