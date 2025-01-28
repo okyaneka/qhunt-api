@@ -21,7 +21,10 @@ ChallengeRoute.get(
 
     const { value } = UserChallengeParamsValidator.validate(req.query);
 
-    const data = await UserChallengeService.list(value, res.locals.TID);
+    const data = await UserChallengeService.list(value, res.locals.TID).catch(
+      (err) => err
+    );
+    if (data instanceof Error) return next(data);
 
     res.json(response.success(data));
   }
