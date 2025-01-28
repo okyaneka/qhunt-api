@@ -19,8 +19,6 @@ import {
 } from "qhunt-lib/models";
 import { StageStatus } from "qhunt-lib/models/StageModel";
 import {
-  Challenge,
-  ChallengePayload,
   ChallengeStatus,
   ChallengeType,
 } from "qhunt-lib/models/ChallengeModel";
@@ -63,7 +61,7 @@ const seeders = async () => {
     contents: [],
     settings: {
       canDoRandomChallenges: false,
-      canStartFromChallenges: false,
+      canStartFromChallenges: true,
       periode: {
         startDate: dayjs("2024-01-01").toDate(),
         endDate: dayjs("2024-01-30").toDate(),
