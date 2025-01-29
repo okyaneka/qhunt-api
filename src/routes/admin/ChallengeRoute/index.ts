@@ -2,18 +2,21 @@ import { response } from "qhunt-lib/helpers";
 import { Router } from "express";
 import { AuthMiddleware, ValidationMiddleware } from "~/middlewares";
 import { ChallengeService, TriviaService } from "qhunt-lib/services";
-import { ChallengeType } from "qhunt-lib/models/ChallengeModel";
+import {
+  ChallengeType,
+  ChallengeTypeValues,
+} from "qhunt-lib/models/ChallengeModel";
 import { ChallengeListParamsValidator } from "qhunt-lib/validators/ChallengeValidator";
 import { TriviaItemsPayloadValidator } from "qhunt-lib/validators/TriviaValidator";
 
 const path = {
   list: "/list",
   create: "/create",
-  detail: "/detail/:id",
-  detailContent: "/detail/:id/content",
-  update: "/update/:id",
-  updateContent: "/update/:id/content",
-  delete: "/delete/:id",
+  detail: "/:id/detail",
+  detailContent: "/:id/detail/content",
+  update: "/:id/update",
+  updateContent: "/:id/update/content",
+  delete: "/:id/delete",
 } as const;
 
 const ChallengeRoute = Router();
@@ -73,7 +76,7 @@ ChallengeRoute.get(path.detailContent, async (req, res) => {
   }
 
   switch (item.settings.type) {
-    case ChallengeType.Trivia:
+    case ChallengeTypeValues.Trivia:
       const triviaContent = await TriviaService.content(item);
       res.json(response.success(triviaContent));
       return;
@@ -111,7 +114,7 @@ ChallengeRoute.put(path.updateContent, async (req, res, next) => {
   if (item instanceof Error) return next(item);
 
   switch (item.settings.type) {
-    case ChallengeType.Trivia:
+    case ChallengeTypeValues.Trivia:
       const { value: triviaValue, error: triviaError } =
         TriviaItemsPayloadValidator.validate(req.body, { abortEarly: false });
 

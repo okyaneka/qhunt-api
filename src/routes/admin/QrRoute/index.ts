@@ -13,9 +13,9 @@ import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 const path = {
   list: "/list",
   generate: "/generate",
-  detail: "/detail/:id",
-  update: "/update/:id",
-  delete: "/delete/:id",
+  detail: "/:id/detail",
+  update: "/:id/update",
+  delete: "/:id/delete",
   deleteBulk: "/delete/bulk",
 } as const;
 
