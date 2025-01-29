@@ -10,9 +10,9 @@ import {
 const path = {
   list: "/list",
   create: "/create",
-  detail: "/detail/:id",
-  update: "/update/:id",
-  delete: "/delete/:id",
+  detail: "/:id/detail",
+  update: "/:id/update",
+  delete: "/:id/delete",
 } as const;
 
 const StageRoute = Router();

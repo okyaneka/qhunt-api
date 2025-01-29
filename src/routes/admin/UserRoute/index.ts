@@ -8,7 +8,7 @@ import { UserListParamsValidator } from "qhunt-lib/validators/UserValidator";
 
 const path = {
   list: "/list",
-  detail: "/detail/:id",
+  detail: "/:id/detail",
   // update: "/update/:id",
 } as const;
 
