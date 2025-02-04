@@ -5,7 +5,7 @@ import { StageService } from "qhunt-lib/services";
 import {
   StagePayloadValidator,
   StageListParamsValidator,
-} from "qhunt-lib/validators/StageValidator";
+} from "qhunt-lib/validators/stage";
 
 const path = {
   list: "/list",

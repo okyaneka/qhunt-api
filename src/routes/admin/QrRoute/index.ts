@@ -6,7 +6,7 @@ import {
   QrGeneratePayloadValidator,
   QrListParamsValidator,
   QrUpdatePayloadValidator,
-} from "qhunt-lib/validators/QrValidator";
+} from "qhunt-lib/validators/qr";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 
@@ -21,7 +21,7 @@ const path = {
 
 const QrRoute = Router();
 
-QrRoute.use(AuthMiddleware);
+// QrRoute.use(AuthMiddleware);
 
 QrRoute.get(
   path.list,

@@ -1,10 +1,9 @@
 import cookieParser from "cookie-parser";
 import { Express, json } from "express";
 import { CookiesMiddleware } from "~/middlewares";
-import cors from "cors";
 import limiter from "./limiter";
 import mongoose from "./mongoose";
-import { env } from "~/configs";
+import cors from "~/configs/cors";
 
 const plugins = (app: Express) => {
   mongoose();
@@ -12,13 +11,7 @@ const plugins = (app: Express) => {
   app.use(json());
   app.use(cookieParser());
   app.use(CookiesMiddleware);
-  app.use(
-    cors({
-      origin: env.APP_URL,
-      allowedHeaders: ["Content-Type", "Authorization"],
-      credentials: true,
-    })
-  );
+  app.use(cors());
 };
 
 export default plugins;

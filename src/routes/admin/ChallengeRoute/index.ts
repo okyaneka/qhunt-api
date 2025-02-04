@@ -5,7 +5,7 @@ import { ChallengeService } from "qhunt-lib/services";
 import {
   ChallengeListParamsValidator,
   ChallengePayloadValidator,
-} from "qhunt-lib/validators/ChallengeValidator";
+} from "qhunt-lib/validators/challenge";
 import TriviaRoute from "./TriviaRoute";
 import PhotoHuntRoute from "./PhotoHuntRoute";
 
