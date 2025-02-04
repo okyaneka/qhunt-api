@@ -1,4 +1,4 @@
-import { TriviaPayload } from "qhunt-lib/models/TriviaModel";
+import { TriviaPayload } from "qhunt-lib";
 
 const trivias: TriviaPayload[] = [
   {

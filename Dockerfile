@@ -3,7 +3,7 @@ FROM node:20-alpine AS build
 
 WORKDIR /usr/src/app
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.2.0
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
@@ -23,12 +23,10 @@ WORKDIR /usr/src/app
 ARG NODE_ENV=production
 ARG PORT=3000
 
-COPY --from=build /usr/src/app/package.json .
-COPY --from=build /usr/src/app/pnpm-lock.yaml .
-COPY --from=build /usr/src/app/tsconfig.json .
+COPY --from=build /usr/src/app/package.json /usr/src/app/pnpm-lock.yaml /usr/src/app/tsconfig.json ./
 COPY --from=build /usr/src/app/dist ./dist
-RUN npm install -g pnpm
-RUN pnpm install
+
+RUN npm install -g pnpm@10.2.0
 
 ENV NODE_ENV=${NODE_ENV}
 

@@ -21,7 +21,7 @@
     "express-rate-limit": "^7.5.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "qhunt-lib": "link:../qhunt-lib"
+    "qhunt-lib": "github:okyaneka/qhunt-lib"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
@@ -33,5 +33,6 @@
     "tsc-alias": "^1.8.10",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2"
-  }
+  },
+  "packageManager": "pnpm@10.2.0"
 }

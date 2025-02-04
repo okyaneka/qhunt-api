@@ -13,27 +13,20 @@ import {
   StageModel,
   TriviaModel,
   UserChallengeModel,
-  UserModel,
-  UserPublicModel,
   UserStageModel,
   UserTriviaModel,
 } from "qhunt-lib/models";
-import { StageStatus, StageStatusValues } from "qhunt-lib/models/StageModel";
 import {
-  ChallengeStatus,
-  ChallengeStatusValues,
-  ChallengeType,
-  ChallengeTypeValues,
-} from "qhunt-lib/models/ChallengeModel";
-import {
+  QR_STATUS,
+  STAGE_STATUS,
+  CHALLENGE_STATUS,
+  QR_CONTENT_TYPES,
+  CHALLENGE_TYPES,
   Qr,
   QrContent,
-  QrContentType,
-  QrStatus,
-  QrStatusValues,
-} from "qhunt-lib/models/QrModel";
+} from "qhunt-lib";
 import trivias from "./trivias";
-import { QrListParamsValidator } from "qhunt-lib/validators/QrValidator";
+import { QrListParamsValidator } from "qhunt-lib/validators/qr";
 import photohunts from "./photohunts";
 
 const seeders = async () => {
@@ -77,7 +70,7 @@ const seeders = async () => {
         endDate: dayjs("2024-01-30").toDate(),
       },
     },
-    status: StageStatusValues.Draft,
+    status: STAGE_STATUS.Draft,
     storyline: [
       "Ah",
       "Menjalani rutinitas yang membosankan",
@@ -89,7 +82,7 @@ const seeders = async () => {
   const challenge1 = await ChallengeService.create({
     name: "Task 1",
     stageId: stage.id,
-    status: ChallengeStatusValues.Draft,
+    status: CHALLENGE_STATUS.Draft,
     storyline: [
       "Task Pertama",
       "Tenang, task ini gak susah-susah amat kok",
@@ -103,14 +96,14 @@ const seeders = async () => {
       clue: "",
       duration: 5 * 60,
       feedback: { negative: "Hahahaha. Kalah", positive: "Wow, bagus" },
-      type: ChallengeTypeValues.Trivia,
+      type: CHALLENGE_TYPES.Trivia,
     },
   });
 
   const challenge2 = await ChallengeService.create({
     name: "Task 2",
     stageId: stage.id,
-    status: ChallengeStatusValues.Draft,
+    status: CHALLENGE_STATUS.Draft,
     storyline: [
       "Task Kedua",
       "Kalau kamu sudah bisa membuka task ini artinya kamu sudah mengerjakan Task Pertama",
@@ -127,14 +120,14 @@ const seeders = async () => {
       clue: "",
       duration: 5 * 60,
       feedback: { negative: "Hahahaha. Kalah", positive: "Wow, bagus" },
-      type: ChallengeTypeValues.Trivia,
+      type: CHALLENGE_TYPES.Trivia,
     },
   });
 
   const challenge3 = await ChallengeService.create({
     name: "Task 3",
     stageId: stage.id,
-    status: ChallengeStatusValues.Draft,
+    status: CHALLENGE_STATUS.Draft,
     storyline: [
       "Task Ketiga",
       "Wow, kamu sudah bisa melangkah sejauh ini",
@@ -150,13 +143,13 @@ const seeders = async () => {
       clue: "",
       duration: 5 * 60,
       feedback: { negative: "Hahahaha. Kalah", positive: "Wow, bagus" },
-      type: ChallengeTypeValues.Trivia,
+      type: CHALLENGE_TYPES.Trivia,
     },
   });
   const challenge4 = await ChallengeService.create({
     name: "Task 4",
     stageId: stage.id,
-    status: ChallengeStatusValues.Draft,
+    status: CHALLENGE_STATUS.Draft,
     storyline: [
       "Task Keempat",
       "Kalian cukup cari barang yang ada stiker kode QR nya",
@@ -170,7 +163,7 @@ const seeders = async () => {
       clue: "",
       duration: 5 * 60,
       feedback: { negative: "Hahahaha. Kalah", positive: "Wow, bagus" },
-      type: ChallengeTypeValues.PhotoHunt,
+      type: CHALLENGE_TYPES.PhotoHunt,
     },
   });
 
@@ -190,11 +183,11 @@ const seeders = async () => {
   const qr = await QrService.generate(5);
 
   const QrContents: QrContent[] = [
-    { type: QrContentType.Stage, refId: stage.id },
-    { type: QrContentType.Challenge, refId: challenge1.id },
-    { type: QrContentType.Challenge, refId: challenge2.id },
-    { type: QrContentType.Challenge, refId: challenge3.id },
-    { type: QrContentType.Challenge, refId: challenge4.id },
+    { type: QR_CONTENT_TYPES.Stage, refId: stage.id },
+    { type: QR_CONTENT_TYPES.Challenge, refId: challenge1.id },
+    { type: QR_CONTENT_TYPES.Challenge, refId: challenge2.id },
+    { type: QR_CONTENT_TYPES.Challenge, refId: challenge3.id },
+    { type: QR_CONTENT_TYPES.Challenge, refId: challenge4.id },
   ];
 
   const qrs = await Promise.all(
@@ -202,7 +195,7 @@ const seeders = async () => {
       QrService.update(qr[i].id, {
         content,
         location: null,
-        status: QrStatusValues.Draft,
+        status: QR_STATUS.Draft,
       })
     )
   );
@@ -217,7 +210,7 @@ const seeders = async () => {
   await StageModel.updateOne(
     { _id: stage.id },
     {
-      status: StageStatusValues.Publish,
+      status: STAGE_STATUS.Publish,
     }
   ).then(() => console.log("Stage published"));
 
@@ -228,13 +221,13 @@ const seeders = async () => {
       },
     },
     {
-      status: ChallengeStatusValues.Publish,
+      status: CHALLENGE_STATUS.Publish,
     }
   ).then(() => console.log("Challenges published"));
 
   await QrModel.updateMany(
     { content: { $ne: null } },
-    { status: QrStatusValues.Publish }
+    { status: QR_STATUS.Publish }
   ).then((res) => {
     console.log("QRs published");
     return res;
@@ -242,7 +235,7 @@ const seeders = async () => {
 
   const codes = await QrService.list(
     await QrListParamsValidator.validateAsync({
-      status: QrStatusValues.Publish,
+      status: QR_STATUS.Publish,
     })
   );
   console.log("codes");

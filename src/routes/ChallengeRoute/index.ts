@@ -6,11 +6,8 @@ import {
   UserTriviaService,
   UserPhotoHuntService,
 } from "qhunt-lib/services";
-import { UserChallengeParamsValidator } from "qhunt-lib/validators/UserChallengeValidator";
-import {
-  ChallengeType,
-  ChallengeTypeValues,
-} from "qhunt-lib/models/ChallengeModel";
+import { UserChallengeParamsValidator } from "qhunt-lib/validators/user-challenge";
+import { CHALLENGE_TYPES, ChallengeType } from "qhunt-lib";
 
 const path = {
   list: "/list",
@@ -56,15 +53,16 @@ ChallengeRoute.get(path.details, async (req, res, next) => {
   if (!res.locals.TID) return next(new Error("error"));
   const id = req.params.id;
   const type = req.params.type as ChallengeType;
-  if (!Object.values(ChallengeTypeValues).includes(type)) {
+  if (!Object.values(CHALLENGE_TYPES).includes(type)) {
     next(new Error("unknown type"));
     return;
   }
 
   const services = {
-    [ChallengeTypeValues.PhotoHunt]: UserPhotoHuntService,
-    [ChallengeTypeValues.Trivia]: UserTriviaService,
+    [CHALLENGE_TYPES.PhotoHunt]: UserPhotoHuntService,
+    [CHALLENGE_TYPES.Trivia]: UserTriviaService,
   };
+
   const userChallenge = await UserChallengeService.detail(id, res.locals.TID);
   const data = await services[type]
     .details(userChallenge.contents, res.locals.TID)

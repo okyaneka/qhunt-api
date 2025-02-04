@@ -2,9 +2,9 @@ import { Router } from "express";
 import { response } from "qhunt-lib/helpers";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
-import { UserRole } from "qhunt-lib/models/UserModel";
+import { UserRole } from "qhunt-lib";
 import { UserService } from "qhunt-lib/services";
-import { UserListParamsValidator } from "qhunt-lib/validators/UserValidator";
+import { UserListParamsValidator } from "qhunt-lib/validators/user";
 
 const path = {
   list: "/list",

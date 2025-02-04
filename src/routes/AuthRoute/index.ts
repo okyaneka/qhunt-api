@@ -2,7 +2,7 @@ import { Router } from "express";
 import { response } from "qhunt-lib/helpers";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
-import { UserPayloadValidator } from "qhunt-lib/validators/UserValidator";
+import { UserPayloadValidator } from "qhunt-lib/validators/user";
 import { UserService } from "qhunt-lib/services";
 import cookies from "~/configs/cookies";
 import { env } from "~/configs";

@@ -1,7 +1,7 @@
 import cookies from "~/configs/cookies";
 import { RequestHandler } from "express";
 import { UserPublicService } from "qhunt-lib/services";
-import { UserPublic } from "qhunt-lib/models/UserPublicModel";
+import { UserPublic } from "qhunt-lib";
 import { response } from "qhunt-lib/helpers";
 
 const CookiesMiddleware: RequestHandler = async (req, res, next) => {
