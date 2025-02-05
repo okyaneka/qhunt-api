@@ -38,8 +38,8 @@ AuthRoute.post(
 
     const { TID, ...user } = data;
 
-    res.cookie(cookies.TID_API, TID, cookies.options(env.DOMAIN_API));
-    res.cookie(cookies.TID_SOCKET, TID, cookies.options(env.DOMAIN_SOCKET));
+    res.cookie(cookies.TID_API, TID, cookies.options);
+    res.cookie(cookies.TID_SOCKET, TID, cookies.options);
 
     res.json(response.success(user));
   }
