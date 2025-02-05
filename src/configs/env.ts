@@ -14,6 +14,9 @@ const env = {
   JWT_SECRET: process.env.JWT_SECRET || "",
 
   APP_URL: process.env.APP_URL || "",
-};
+
+  DOMAIN_API: process.env.DOMAIN_API || "",
+  DOMAIN_SOCKET: process.env.DOMAIN_SOCKET || "",
+} as const;
 
 export default env;
