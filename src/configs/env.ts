@@ -15,8 +15,7 @@ const env = {
 
   APP_URL: process.env.APP_URL || "",
 
-  DOMAIN_API: process.env.DOMAIN_API || "",
-  DOMAIN_SOCKET: process.env.DOMAIN_SOCKET || "",
+  DOMAIN: process.env.DOMAIN || "",
 } as const;
 
 export default env;

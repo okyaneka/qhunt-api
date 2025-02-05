@@ -1,15 +1,14 @@
 import { CookieOptions } from "express";
+import env from "./env";
 
-const options = (domain?: string): CookieOptions => {
-  return {
-    // for 30 days
-    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3),
-    path: "/",
-    sameSite: "none",
-    secure: true,
-    domain: domain,
-    httpOnly: true,
-  };
+const options: CookieOptions = {
+  // for 30 days
+  expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3),
+  path: "/",
+  sameSite: "none",
+  secure: true,
+  domain: env.DOMAIN,
+  httpOnly: true,
 };
 
 const cookies = {
