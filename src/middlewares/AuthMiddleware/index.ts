@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { response } from "qhunt-lib/helpers";
 import { decode, verify } from "jsonwebtoken";
-import { cookies, env } from "~/configs";
+import { env } from "~/configs";
 import { UserService } from "qhunt-lib/services";
 
 const AuthMiddleware: RequestHandler = async (
@@ -31,7 +31,6 @@ const AuthMiddleware: RequestHandler = async (
     return;
   }
 
-  res.cookie(cookies.TID, user.meta.code, cookies.options);
   res.locals.TID = user.meta.code;
   res.locals.user = { id: user.id, role: user.role };
 

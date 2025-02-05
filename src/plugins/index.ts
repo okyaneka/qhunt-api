@@ -10,8 +10,8 @@ const plugins = (app: Express) => {
   app.use(limiter());
   app.use(json());
   app.use(cookieParser());
-  app.use(CookiesMiddleware);
   app.use(cors());
+  app.use(CookiesMiddleware);
 };
 
 export default plugins;
