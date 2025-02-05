@@ -27,6 +27,7 @@ COPY --from=build /usr/src/app/package.json /usr/src/app/pnpm-lock.yaml /usr/src
 COPY --from=build /usr/src/app/dist ./dist
 
 RUN npm install -g pnpm@10.2.0
+RUN pnpm install
 
 ENV NODE_ENV=${NODE_ENV}
 
