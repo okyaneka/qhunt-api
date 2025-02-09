@@ -3,13 +3,33 @@ import { response } from "qhunt-lib/helpers";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 import { UserPayloadValidator } from "qhunt-lib/validators/user";
-import { UserService } from "qhunt-lib/services";
+import { UserPublicService, UserService } from "qhunt-lib/services";
 import cookies from "~/configs/cookies";
 import { env } from "~/configs";
+import { handler } from "~/helpers";
+
+const path = {
+  me: "/me",
+  profile: "/profile",
+  login: "/login",
+  register: "/register",
+} as const;
 
 const AuthRoute = Router();
 
-AuthRoute.get("/profile", AuthMiddleware, async (req, res, next) => {
+AuthRoute.get(
+  path.me,
+  handler(async (req, res, next) => {
+    const TID = res.locals.TID;
+    if (!TID) throw new Error("token invalid");
+
+    const data = await UserPublicService.verify(TID);
+
+    res.json(response.success(data));
+  })
+);
+
+AuthRoute.get(path.profile, AuthMiddleware, async (req, res, next) => {
   const auth = res.locals.user;
 
   const user = await UserService.detail(auth?.id as string).catch(
@@ -22,7 +42,7 @@ AuthRoute.get("/profile", AuthMiddleware, async (req, res, next) => {
 });
 
 AuthRoute.post(
-  "/login",
+  path.login,
   ValidationMiddleware({ body: UserPayloadValidator }),
   async (req, res) => {
     const { value } = UserPayloadValidator.validate(req.body);
@@ -46,7 +66,7 @@ AuthRoute.post(
 );
 
 AuthRoute.post(
-  "/register",
+  path.register,
   ValidationMiddleware({ body: UserPayloadValidator }),
   async (req, res) => {
     const { value } = UserPayloadValidator.validate(req.body);
