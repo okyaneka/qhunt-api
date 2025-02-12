@@ -80,16 +80,16 @@ const seeders = async () => {
   });
 
   const challenge1 = await ChallengeService.create({
-    name: "Task 1",
+    name: "Tantangan 1",
     stageId: stage.id,
     status: CHALLENGE_STATUS.Draft,
     storyline: [
-      "Task Pertama",
-      "Tenang, task ini gak susah-susah amat kok",
-      "Dalam task ini, kamu cuma dituntut untuk mengerjakan 5 trivia singkat",
+      "Tantangan Pertama",
+      "Tenang, tantangan ini gak susah-susah amat kok",
+      "Dalam tantangan ini, kamu cuma dituntut untuk mengerjakan 5 trivia singkat",
       "Setiap trivia yang terjawab benar akan mendapatkan poin 100",
       "Tidak hanya itu, jika kamu bisa menjawabnya dengan cepat maka kamu akan mendapat bonus",
-      "Oh iya, satu lagi. Kamu gak akan bisa mengulangi task ini lagi. Jadi telitilah sebelum menjawab",
+      "Oh iya, satu lagi. Kamu gak akan bisa mengulangi tantangan ini lagi. Jadi telitilah sebelum menjawab",
       "Apakah kamu sudah siap?",
     ],
     settings: {
@@ -101,19 +101,19 @@ const seeders = async () => {
   });
 
   const challenge2 = await ChallengeService.create({
-    name: "Task 2",
+    name: "Tantangan 2",
     stageId: stage.id,
     status: CHALLENGE_STATUS.Draft,
     storyline: [
-      "Task Kedua",
-      "Kalau kamu sudah bisa membuka task ini artinya kamu sudah mengerjakan Task Pertama",
+      "Tantangan Kedua",
+      "Kalau kamu sudah bisa membuka tantangan ini artinya kamu sudah mengerjakan Tantangan Pertama",
       "Gimana menurutmu?",
       "Asyik kan?",
-      "Task Kedua ini gak kalah asyik",
-      "Seperti di Task Pertama, kamu cuma cukup mengerjakan 5 trivia singkat",
+      "Tantangan Kedua ini gak kalah asyik",
+      "Seperti di Tantangan Pertama, kamu cuma cukup mengerjakan 5 trivia singkat",
       "Setiap trivia yang terjawab benar akan mendapatkan poin 100",
       "Tidak hanya itu, jika kamu bisa menjawabnya dengan cepat maka kamu akan mendapat bonus",
-      "Oh iya, satu lagi. Kamu gak akan bisa mengulangi task ini lagi. Jadi telitilah sebelum menjawab",
+      "Oh iya, satu lagi. Kamu gak akan bisa mengulangi tantangan ini lagi. Jadi telitilah sebelum menjawab",
       "Apakah kamu sudah siap?",
     ],
     settings: {
@@ -125,18 +125,18 @@ const seeders = async () => {
   });
 
   const challenge3 = await ChallengeService.create({
-    name: "Task 3",
+    name: "Tantangan 3",
     stageId: stage.id,
     status: CHALLENGE_STATUS.Draft,
     storyline: [
-      "Task Ketiga",
+      "Tantangan Ketiga",
       "Wow, kamu sudah bisa melangkah sejauh ini",
-      "Aku tidak akan menanyakan bagaimana Task Pertama dan Task Kedua karena Aku yakin Kamu sangat menikmatinya",
-      "Dan juga, Aku yakin kamu juga sudah tidak sabar untuk Task Ketiga",
-      "Tidak seperti di Task Pertama dan Task Kedua, kamu di sini harus mengerjakan 10 trivia",
+      "Aku tidak akan menanyakan bagaimana Tantangan Pertama dan Tantangan Kedua karena Aku yakin Kamu sangat menikmatinya",
+      "Dan juga, Aku yakin kamu juga sudah tidak sabar untuk Tantangan Ketiga",
+      "Tidak seperti di Tantangan Pertama dan Tantangan Kedua, kamu di sini harus mengerjakan 10 trivia",
       "Poin yang didapatkan pun akan naik menjadi 200 poin setiap trivia terjawab benar",
       "Dan juga, jika kamu bisa menjawabnya dengan cepat, maka kamu akan mendapat bonus",
-      "Oh iya, satu lagi. Kamu gak akan bisa mengulangi task ini lagi. Jadi telitilah sebelum menjawab",
+      "Oh iya, satu lagi. Kamu gak akan bisa mengulangi tantangan ini lagi. Jadi telitilah sebelum menjawab",
       "Apakah kamu sudah siap?",
     ],
     settings: {
@@ -147,11 +147,11 @@ const seeders = async () => {
     },
   });
   const challenge4 = await ChallengeService.create({
-    name: "Task 4",
+    name: "Tantangan 4",
     stageId: stage.id,
     status: CHALLENGE_STATUS.Draft,
     storyline: [
-      "Task Keempat",
+      "Tantangan Keempat",
       "Kalian cukup cari barang yang ada stiker kode QR nya",
       "Mudah kan?",
       "Tapi kamu harus bisa menemukannya dalam waktu 5 menut",
