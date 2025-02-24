@@ -1,4 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
+import validator from "./validator";
 
 type OpsHandler = (
   req: Request,
@@ -12,6 +13,8 @@ export const handler = (ops: OpsHandler): RequestHandler => {
   };
 };
 
-const helpers = {} as const;
+export { validator };
+
+const helpers = { validator } as const;
 
 export default helpers;

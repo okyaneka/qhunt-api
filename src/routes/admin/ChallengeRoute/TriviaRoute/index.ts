@@ -2,7 +2,7 @@ import { Request, Router } from "express";
 import { response } from "qhunt-lib/helpers";
 import { TriviaService } from "qhunt-lib/services";
 import { ValidationMiddleware } from "~/middlewares";
-import { TriviaItemsPayloadValidator } from "qhunt-lib/validators/trivia";
+import { TriviaItemsPayloadValidator } from "~/validators/trivia";
 
 type Params = {
   id: string;

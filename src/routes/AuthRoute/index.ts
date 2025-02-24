@@ -2,11 +2,12 @@ import { Router } from "express";
 import { response } from "qhunt-lib/helpers";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
-import { UserPayloadValidator } from "qhunt-lib/validators/user";
+import { UserPayloadValidator } from "~/validators/user";
 import { UserPublicService, UserService } from "qhunt-lib/services";
 import cookies from "~/configs/cookies";
 import { env } from "~/configs";
 import { handler } from "~/helpers";
+import redis from "~/plugins/redis";
 
 const path = {
   me: "/me",
@@ -45,7 +46,7 @@ AuthRoute.post(
   path.login,
   ValidationMiddleware({ body: UserPayloadValidator }),
   async (req, res) => {
-    const { value } = UserPayloadValidator.validate(req.body);
+    const value = await UserPayloadValidator.validateAsync(req.body);
 
     const data = await UserService.login(value, env.JWT_SECRET).catch(
       (err) => err
@@ -68,19 +69,37 @@ AuthRoute.post(
 AuthRoute.post(
   path.register,
   ValidationMiddleware({ body: UserPayloadValidator }),
-  async (req, res) => {
+  async (req, res, next) => {
     const { value } = UserPayloadValidator.validate(req.body);
 
-    const user = await UserService.register(value, res.locals.TID).catch(
-      (err) => err
-    );
+    const userData = await UserService.register(
+      value,
+      String(res.locals.TID)
+    ).catch((err) => err);
 
-    if (user instanceof Error) {
-      res.status(400).json(response.error({}, user.message));
+    if (userData instanceof Error) {
+      res.clearCookie(cookies.TOKEN);
+      next(userData);
       return;
     }
 
-    res.json(response.success({}, "register success"));
+    const data = await UserService.login(value, env.JWT_SECRET).catch(
+      (err) => err
+    );
+
+    if (data instanceof Error) {
+      res.clearCookie(cookies.TOKEN);
+      next(data);
+      return;
+    }
+
+    const { TID, ...user } = data;
+
+    redis().pub("update-user", userData);
+
+    res.cookie(cookies.TOKEN, data.token, cookies.options);
+
+    res.json(response.success(user, "register success"));
   }
 );
 
