@@ -7,10 +7,8 @@ const local = /^https?:\/\/localhost:\d+$/;
 const cors = () => {
   return config({
     origin: (origin, callback) => {
-      if (!origin || origins.includes(origin) || local.test(origin))
-        return callback(null, true);
-
-      return callback(new Error("Not allowed by CORS"));
+      const allowed = !origin || origins.includes(origin) || local.test(origin);
+      callback(null, allowed);
     },
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
