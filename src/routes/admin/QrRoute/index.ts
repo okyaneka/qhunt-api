@@ -6,7 +6,7 @@ import {
   QrGeneratePayloadValidator,
   QrListParamsValidator,
   QrUpdatePayloadValidator,
-} from "qhunt-lib/validators/qr";
+} from "~/validators/qr";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 

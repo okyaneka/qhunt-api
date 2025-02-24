@@ -14,6 +14,7 @@ const options: CookieOptions = {
 const cookies = {
   TID_API: "TID_API",
   TID_SOCKET: "TID_SOCKET",
+  TOKEN: "TOKEN",
   options,
 } as const;
 

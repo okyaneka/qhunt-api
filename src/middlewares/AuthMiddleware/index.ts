@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { response } from "qhunt-lib/helpers";
 import { decode, verify } from "jsonwebtoken";
-import { env } from "~/configs";
+import { cookies, env } from "~/configs";
 import { UserService } from "qhunt-lib/services";
 
 const AuthMiddleware: RequestHandler = async (
@@ -9,13 +9,13 @@ const AuthMiddleware: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const bearer = req.headers.authorization;
-  if (!bearer || !bearer.startsWith("Bearer ")) {
-    res.status(401).json(response.error({}, "unauthorized", 401));
-    return;
-  }
+  // const bearer = req.headers.authorization;
+  // if (!bearer || !bearer.startsWith("Bearer ")) {
+  //   res.status(401).json(response.error({}, "unauthorized", 401));
+  //   return;
+  // }
 
-  const token = bearer?.split(" ")[1];
+  const token = req.cookies[cookies.TOKEN] as string;
 
   verify(token, env.JWT_SECRET, (err) => {
     if (err) {

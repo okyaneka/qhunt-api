@@ -7,6 +7,7 @@ declare global {
     interface Locals {
       user?: Pick<User, "id" | "role">;
       TID?: string;
+      TOKEN?: string;
     }
   }
 }

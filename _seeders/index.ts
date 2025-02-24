@@ -56,7 +56,7 @@ const seeders = async () => {
     console.log("UserTriviaModel truncated")
   );
 
-  await QrService.generate(10).then(() => console.log("10 QR Generated"));
+  await QrService.generate(100).then(() => console.log("100 QR Generated"));
 
   // const challenges =  await Promise.all()
   const stage = await StageService.create({
@@ -154,7 +154,27 @@ const seeders = async () => {
       "Tantangan Keempat",
       "Kalian cukup cari barang yang ada stiker kode QR nya",
       "Mudah kan?",
-      "Tapi kamu harus bisa menemukannya dalam waktu 5 menut",
+      "Tapi kamu harus bisa menemukannya dalam waktu 5 menit",
+      "Setiap barang yang ditemukan akan mendapatkan 100 poin",
+      "Jika kamu bisa menemukan semua barang, kamu juga akan mendapatkan bonus",
+      "Apakah kamu sudah siap?",
+    ],
+    settings: {
+      clue: "",
+      duration: 5 * 60,
+      feedback: { negative: "Hahahaha. Kalah", positive: "Wow, bagus" },
+      type: CHALLENGE_TYPES.PhotoHunt,
+    },
+  });
+  const challenge5 = await ChallengeService.create({
+    name: "Tantangan 5",
+    stageId: stage.id,
+    status: CHALLENGE_STATUS.Draft,
+    storyline: [
+      "Tantangan Kelima",
+      "Kalian cukup cari barang yang ada stiker kode QR nya",
+      "Mudah kan?",
+      "Tapi kamu harus bisa menemukannya dalam waktu 5 menit",
       "Setiap barang yang ditemukan akan mendapatkan 100 poin",
       "Jika kamu bisa menemukan semua barang, kamu juga akan mendapatkan bonus",
       "Apakah kamu sudah siap?",
@@ -176,11 +196,12 @@ const seeders = async () => {
   await TriviaService.sync(challenge3.id, trivias.slice(10, 20)).then(() =>
     console.log("Syncing trivia to Challente 3")
   );
-  await PhotoHuntService.sync(challenge4.id, photohunts).then(() =>
+  await PhotoHuntService.sync(challenge4.id, photohunts.slice(0, 5)).then(() =>
     console.log("Syncing photo hunt to Challente 4")
   );
-
-  const qr = await QrService.generate(5);
+  await PhotoHuntService.sync(challenge5.id, photohunts.slice(5, 10)).then(() =>
+    console.log("Syncing photo hunt to Challente 5")
+  );
 
   const QrContents: QrContent[] = [
     { type: QR_CONTENT_TYPES.Stage, refId: stage.id },
@@ -188,7 +209,9 @@ const seeders = async () => {
     { type: QR_CONTENT_TYPES.Challenge, refId: challenge2.id },
     { type: QR_CONTENT_TYPES.Challenge, refId: challenge3.id },
     { type: QR_CONTENT_TYPES.Challenge, refId: challenge4.id },
+    { type: QR_CONTENT_TYPES.Challenge, refId: challenge5.id },
   ];
+  const qr = await QrService.generate(QrContents.length);
 
   const qrs = await Promise.all(
     QrContents.map((content, i) =>
@@ -217,7 +240,13 @@ const seeders = async () => {
   await ChallengeModel.updateMany(
     {
       _id: {
-        $in: [challenge1.id, challenge2.id, challenge3.id, challenge4.id],
+        $in: [
+          challenge1.id,
+          challenge2.id,
+          challenge3.id,
+          challenge4.id,
+          challenge5.id,
+        ],
       },
     },
     {
@@ -236,6 +265,7 @@ const seeders = async () => {
   const codes = await QrService.list(
     await QrListParamsValidator.validateAsync({
       status: QR_STATUS.Publish,
+      limit: 100,
     })
   );
   console.log("codes");

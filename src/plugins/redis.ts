@@ -1,20 +1,17 @@
-import Redis from "ioredis";
 import { env } from "~/configs";
+import RedisHelper, { RedisOptions } from "qhunt-lib/plugins/redis";
 
-let instance: Redis;
+const options: RedisOptions = {
+  host: env.REDIS_HOST,
+  port: env.REDIS_PORT,
+  password: env.REDIS_PASSWORD,
+  retryStrategy: (times) => Math.min(times * 50, 2000),
+};
+
+let instance: RedisHelper;
 
 const redis = () => {
-  if (!instance) {
-    instance = new Redis({
-      host: env.REDIS_HOST,
-      port: env.REDIS_PORT,
-      password: env.REDIS_PASSWORD,
-      retryStrategy: (times) => Math.min(times * 50, 2000),
-    });
-
-    instance.on("connect", () => console.log("Redis connected successfully!"));
-    instance.on("error", (err) => console.error("❌ Redis Error:", err));
-  }
+  if (!instance) instance = new RedisHelper(options);
   return instance;
 };
 
