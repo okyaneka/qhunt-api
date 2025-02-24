@@ -8,10 +8,12 @@ import cookies from "~/configs/cookies";
 import { env } from "~/configs";
 import { handler } from "~/helpers";
 import redis from "~/plugins/redis";
+import { UserPublicPayloadValidator } from "~/validators/user-public";
 
 const path = {
   me: "/me",
   profile: "/profile",
+  edit: "/profile/edit",
   login: "/login",
   register: "/register",
 } as const;
@@ -29,18 +31,6 @@ AuthRoute.get(
     res.json(response.success(data));
   })
 );
-
-AuthRoute.get(path.profile, AuthMiddleware, async (req, res, next) => {
-  const auth = res.locals.user;
-
-  const user = await UserService.detail(auth?.id as string).catch(
-    (err: Error) => err
-  );
-
-  if (user instanceof Error) return next(user);
-
-  res.json(response.success(user));
-});
 
 AuthRoute.post(
   path.login,
@@ -101,6 +91,30 @@ AuthRoute.post(
 
     res.json(response.success(user, "register success"));
   }
+);
+
+AuthRoute.get(path.profile, AuthMiddleware, async (req, res, next) => {
+  const auth = res.locals.user;
+
+  const user = await UserService.detail(auth?.id as string).catch(
+    (err: Error) => err
+  );
+
+  if (user instanceof Error) return next(user);
+
+  res.json(response.success(user));
+});
+
+AuthRoute.put(
+  path.edit,
+  AuthMiddleware,
+  ValidationMiddleware({ body: UserPublicPayloadValidator }),
+  handler(async (req, res) => {
+    const payload = await UserPublicPayloadValidator.validateAsync(req.body);
+    const auth = res.locals.user;
+
+    return await UserService.update(auth?.id, payload);
+  })
 );
 
 export default AuthRoute;

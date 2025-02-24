@@ -1,6 +1,6 @@
 import cookies from "~/configs/cookies";
 import { RequestHandler } from "express";
-import { UserPublicService } from "qhunt-lib/services";
+import { UserPublicService, UserService } from "qhunt-lib/services";
 import { UserPublic } from "qhunt-lib";
 import { response } from "qhunt-lib/helpers";
 import { env } from "~/configs";
@@ -17,6 +17,12 @@ const CookiesMiddleware: RequestHandler = async (req, res, next) => {
     if (decoded?.id) {
       user = await UserPublicService.verify(decoded.id).catch(() => null);
       if (!user) res.clearCookie(cookies.TOKEN);
+      const parentUser = await UserService.detail(decoded.id).catch(() => null);
+      if (!parentUser) {
+        res.status(401).json(response.error({}, "invalid auth", 401));
+        return;
+      }
+      res.locals.user = { id: parentUser.id, role: parentUser.role };
     }
   } else if (TID) {
     user = await UserPublicService.verify(TID).catch(() => null);
