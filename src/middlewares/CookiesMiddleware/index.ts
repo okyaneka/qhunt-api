@@ -4,17 +4,26 @@ import { UserPublicService } from "qhunt-lib/services";
 import { UserPublic } from "qhunt-lib";
 import { response } from "qhunt-lib/helpers";
 import { env } from "~/configs";
+import { verify } from "jsonwebtoken";
 
 const CookiesMiddleware: RequestHandler = async (req, res, next) => {
+  const TOKEN = req.cookies[cookies.TOKEN];
   const TID = req.cookies[cookies.TID_API];
 
   let user: UserPublic | null = null;
 
-  if (TID) {
+  if (TOKEN) {
+    const decoded = verify(TOKEN, env.JWT_SECRET) as { id: string };
+    if (decoded?.id) {
+      user = await UserPublicService.verify(decoded.id).catch(() => null);
+      if (!user) res.clearCookie(cookies.TOKEN);
+    }
+  } else if (TID) {
     user = await UserPublicService.verify(TID).catch(() => null);
-    if (!user) {
+    if (!user || user.user?.id) {
       res.clearCookie(cookies.TID_SOCKET);
       res.clearCookie(cookies.TID_API);
+      user = null;
     }
   }
 
