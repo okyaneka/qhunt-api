@@ -7,13 +7,18 @@ import { UserPublicService, UserService } from "qhunt-lib/services";
 import cookies from "~/configs/cookies";
 import { env } from "~/configs";
 import { handler } from "~/helpers";
-import redis from "~/plugins/redis";
 import { UserPublicPayloadValidator } from "~/validators/user-public";
+import s3 from "~/plugins/s3";
+import uploadFile from "~/plugins/uploadFile";
+import { S3Payload } from "qhunt-lib/types/s3";
+import sharp from "sharp";
+import test from "qhunt-lib/plugins/redis";
 
 const path = {
   me: "/me",
   profile: "/profile",
   edit: "/profile/edit",
+  photo: "/profile/photo",
   login: "/login",
   register: "/register",
 } as const;
@@ -22,13 +27,11 @@ const AuthRoute = Router();
 
 AuthRoute.get(
   path.me,
-  handler(async (req, res, next) => {
+  handler(async (req, res) => {
     const TID = res.locals.TID;
     if (!TID) throw new Error("token invalid");
 
-    const data = await UserPublicService.verify(TID);
-
-    res.json(response.success(data));
+    return await UserPublicService.verify(TID);
   })
 );
 
@@ -85,8 +88,6 @@ AuthRoute.post(
 
     const { TID, ...user } = data;
 
-    redis().pub("update-user", userData);
-
     res.cookie(cookies.TOKEN, data.token, cookies.options);
 
     res.json(response.success(user, "register success"));
@@ -112,8 +113,33 @@ AuthRoute.put(
   handler(async (req, res) => {
     const payload = await UserPublicPayloadValidator.validateAsync(req.body);
     const auth = res.locals.user;
+    const userData = await UserService.update(auth?.id, payload);
+    return userData;
+  })
+);
 
-    return await UserService.update(auth?.id, payload);
+AuthRoute.put(
+  path.photo,
+  AuthMiddleware,
+  uploadFile.single("file"),
+  handler(async (req, res) => {
+    const auth = res.locals.user;
+    const file = req.file;
+
+    if (!file) throw new Error("file is required");
+
+    const processedBuffer = await sharp(file.buffer)
+      .resize({ width: 800, height: 800, fit: "inside" })
+      .jpeg({ quality: 70 })
+      .toBuffer();
+
+    const payload: S3Payload = {
+      buffer: processedBuffer,
+      filename: file.originalname.replace(/\.\w+$/, ".jpg"),
+      mimetype: "image/jpeg",
+    };
+
+    return await UserService.updatePhoto(payload, auth?.id);
   })
 );
 

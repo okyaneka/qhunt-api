@@ -12,6 +12,11 @@ const env = {
   REDIS_PORT: Number(process.env.REDIS_PORT) || 6379,
   REDIS_PASSWORD: process.env.REDIS_PASSWORD || "",
 
+  AWS_REGION: process.env.AWS_REGION || "ap-southeast-1",
+  AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY || "",
+  AWS_SECRET_KEY: process.env.AWS_SECRET_KEY || "",
+  AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || "",
+
   THROTTLE_TIME: Number(process.env.THROTTLE_TIME) || 1,
   THROTTLE_COUNT: Number(process.env.THROTTLE_COUNT) || 5,
 
