@@ -2,7 +2,10 @@ import { Router } from "express";
 import { response } from "qhunt-lib/helpers";
 import { AuthMiddleware } from "~/middlewares";
 import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
-import { UserPayloadValidator } from "~/validators/user";
+import {
+  UserLoginPayloadValidator,
+  UserPayloadValidator,
+} from "~/validators/user";
 import { UserPublicService, UserService } from "qhunt-lib/services";
 import cookies from "~/configs/cookies";
 import { env } from "~/configs";
@@ -19,6 +22,7 @@ const path = {
   photo: "/profile/photo",
   login: "/login",
   register: "/register",
+  logout: "/logout",
 } as const;
 
 const AuthRoute = Router();
@@ -35,26 +39,20 @@ AuthRoute.get(
 
 AuthRoute.post(
   path.login,
-  ValidationMiddleware({ body: UserPayloadValidator }),
-  async (req, res) => {
-    const value = await UserPayloadValidator.validateAsync(req.body);
+  ValidationMiddleware({ body: UserLoginPayloadValidator }),
+  handler(async (req, res) => {
+    const value = await UserLoginPayloadValidator.validateAsync(req.body);
 
-    const data = await UserService.login(value, env.JWT_SECRET).catch(
-      (err) => err
-    );
-
-    if (data instanceof Error) {
-      res.status(400).json(response.error({}, data.message));
-      return;
-    }
+    const data = await UserService.login(value, env.JWT_SECRET);
 
     const { TID, ...user } = data;
 
     res.cookie(cookies.TID_API, TID, cookies.options);
     res.cookie(cookies.TID_SOCKET, TID, cookies.options);
+    res.cookie(cookies.TOKEN, data.token, cookies.options);
 
-    res.json(response.success(user));
-  }
+    return user;
+  })
 );
 
 AuthRoute.post(
@@ -138,6 +136,18 @@ AuthRoute.put(
     };
 
     return await UserService.updatePhoto(payload, auth?.id);
+  })
+);
+
+AuthRoute.post(
+  path.logout,
+  AuthMiddleware,
+  handler(async (req, res) => {
+    res.clearCookie(cookies.TID_API);
+    res.clearCookie(cookies.TID_SOCKET);
+    res.clearCookie(cookies.TOKEN);
+
+    return {};
   })
 );
 
