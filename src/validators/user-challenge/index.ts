@@ -1,10 +1,7 @@
 import validator from "~/helpers/validator";
 import { DefaultListParamsFields } from "~/helpers/validator";
-import {
-  UserChallengeForeign,
-  UserChallengeParams,
-  USER_CHALLENGE_STATUS,
-} from "qhunt-lib/types";
+import { UserChallengeForeign, UserChallengeParams } from "qhunt-lib";
+import { USER_CHALLENGE_STATUS } from "qhunt-lib/constants";
 
 export const UserChallengeForeignValidator =
   validator.generate<UserChallengeForeign>({

@@ -4,7 +4,7 @@ import {
   UserStageForeign,
   UserStageListParams,
   UserStageStatus,
-} from "qhunt-lib/types";
+} from "qhunt-lib";
 
 export const UserStageForeignValidator = validator.generate<UserStageForeign>({
   id: validator.string({ required: true }),

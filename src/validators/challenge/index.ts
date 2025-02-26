@@ -4,14 +4,13 @@ import validator, {
   FeedbackValidator,
 } from "~/helpers/validator";
 import {
-  CHALLENGE_STATUS,
-  CHALLENGE_TYPES,
   ChallengeForeign,
   ChallengeListParams,
   ChallengePayload,
   ChallengeSettings,
   ChallengeSettingsForeign,
-} from "qhunt-lib/types";
+} from "qhunt-lib";
+import { CHALLENGE_STATUS, CHALLENGE_TYPES } from "qhunt-lib/constants";
 
 export const ChallengeListParamsValidator =
   validator.generate<ChallengeListParams>({

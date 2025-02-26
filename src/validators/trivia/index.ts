@@ -5,7 +5,7 @@ import {
   TriviaForeignOption,
   TriviaOption,
   TriviaPayload,
-} from "qhunt-lib/types";
+} from "qhunt-lib";
 
 export const TriviaOptionValidator = validator.generate<TriviaOption>({
   isCorrect: validator.boolean({ defaultValue: false }),

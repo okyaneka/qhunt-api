@@ -7,7 +7,8 @@ import {
   UserPhotoHuntService,
 } from "qhunt-lib/services";
 import { UserChallengeParamsValidator } from "~/validators/user-challenge";
-import { CHALLENGE_TYPES, ChallengeType } from "qhunt-lib";
+import { ChallengeType } from "qhunt-lib";
+import { CHALLENGE_TYPES } from "qhunt-lib/constants";
 
 const path = {
   list: "/list",

@@ -1,5 +1,5 @@
 import validator from "~/helpers/validator";
-import { PhotoHuntPayload } from "qhunt-lib/types";
+import { PhotoHuntPayload } from "qhunt-lib";
 
 export const PhotoHuntPayloadValidator = validator.array(
   validator.generate<PhotoHuntPayload>({

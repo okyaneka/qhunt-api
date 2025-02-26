@@ -8,11 +8,9 @@ import cookies from "~/configs/cookies";
 import { env } from "~/configs";
 import { handler } from "~/helpers";
 import { UserPublicPayloadValidator } from "~/validators/user-public";
-import s3 from "~/plugins/s3";
 import uploadFile from "~/plugins/uploadFile";
-import { S3Payload } from "qhunt-lib/types/s3";
 import sharp from "sharp";
-import test from "qhunt-lib/plugins/redis";
+import { S3Payload } from "qhunt-lib";
 
 const path = {
   me: "/me",
