@@ -1,12 +1,8 @@
 import Joi from "joi";
 import validator from "~/helpers/validator";
-import {
-  StageForeign,
-  StageListParams,
-  StagePayload,
-  STAGE_STATUS,
-} from "qhunt-lib/types";
+import { StageForeign, StageListParams, StagePayload } from "qhunt-lib";
 import { DefaultListParamsFields, PeriodeValidator } from "~/helpers/validator";
+import { STAGE_STATUS } from "qhunt-lib/constants";
 
 export const StageSettingsValidator = validator.generate<
   StagePayload["settings"]

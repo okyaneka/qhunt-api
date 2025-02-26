@@ -1,9 +1,6 @@
 import validator from "~/helpers/validator";
-import {
-  USER_PUBLIC_GENDER,
-  UserPublicForeign,
-  UserPublicPayload,
-} from "qhunt-lib/types";
+import { UserPublicForeign, UserPublicPayload } from "qhunt-lib";
+import { USER_PUBLIC_GENDER } from "qhunt-lib/constants";
 
 export const UserPublicForeignValidator = validator.generate<UserPublicForeign>(
   {

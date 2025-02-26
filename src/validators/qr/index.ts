@@ -1,16 +1,15 @@
 import Joi from "joi";
 import validator from "~/helpers/validator";
 import {
-  QR_CONTENT_TYPES,
-  QR_STATUS,
   QrContent,
   QrDeleteBulkPayload,
   QrGeneratePayload,
   QrListParams,
   QrLocation,
   QrUpdatePayload,
-} from "qhunt-lib/types";
+} from "qhunt-lib";
 import { DefaultListParamsFields } from "~/helpers/validator";
+import { QR_CONTENT_TYPES, QR_STATUS } from "qhunt-lib/constants";
 
 export const QrListParamsValidator = validator.generate<QrListParams>({
   ...DefaultListParamsFields,

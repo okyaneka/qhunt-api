@@ -1,14 +1,15 @@
 import cookieParser from "cookie-parser";
-import { Express, json } from "express";
+import { urlencoded, Express, json } from "express";
 import { CookiesMiddleware } from "~/middlewares";
 import limiter from "./limiter";
 import mongoose from "./mongoose";
 import cors from "~/configs/cors";
-import redis from "./redis";
+import "./redis";
+import "./s3";
 
 const plugins = (app: Express) => {
   mongoose();
-  redis();
+  app.use(urlencoded({ extended: true }));
   app.use(limiter());
   app.use(json());
   app.use(cookieParser());

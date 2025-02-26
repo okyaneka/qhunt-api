@@ -1,8 +1,6 @@
 import { validator } from "~/helpers";
-import {
-  LEADERBOARD_MODE,
-  LeaderboardParams,
-} from "qhunt-lib/types/leaderboard";
+import { LeaderboardParams } from "qhunt-lib";
+import { LEADERBOARD_MODE } from "qhunt-lib/constants";
 
 export const LeaderboardParamsValidator = validator.generate<LeaderboardParams>(
   {
