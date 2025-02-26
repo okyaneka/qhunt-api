@@ -1,5 +1,4 @@
-import { S3Helper } from "qhunt-lib";
-import { S3Options } from "qhunt-lib/plugins/s3";
+import { awsS3, S3Options } from "qhunt-lib/plugins/aws-s3";
 import { env } from "~/configs";
 
 const options: S3Options = {
@@ -11,6 +10,6 @@ const options: S3Options = {
   },
 };
 
-S3Helper.init(options);
+awsS3.init(options);
 
-export default S3Helper;
+export default awsS3;

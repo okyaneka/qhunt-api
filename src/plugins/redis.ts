@@ -1,4 +1,4 @@
-import redis, { RedisOptions } from "qhunt-lib/plugins/redis";
+import { RedisOptions, redis } from "qhunt-lib/plugins/redis";
 import { env } from "~/configs";
 
 const options: RedisOptions = {
