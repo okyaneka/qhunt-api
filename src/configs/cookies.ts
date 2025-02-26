@@ -5,7 +5,7 @@ const options: CookieOptions = {
   // for 30 days
   expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1e3),
   path: "/",
-  sameSite: "none",
+  sameSite: "lax",
   secure: true,
   domain: env.DOMAIN,
   httpOnly: true,
