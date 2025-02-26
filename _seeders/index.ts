@@ -16,17 +16,15 @@ import {
   UserStageModel,
   UserTriviaModel,
 } from "qhunt-lib/models";
+import { Qr, QrContent } from "qhunt-lib";
 import {
   QR_STATUS,
   STAGE_STATUS,
   CHALLENGE_STATUS,
   QR_CONTENT_TYPES,
   CHALLENGE_TYPES,
-  Qr,
-  QrContent,
-} from "qhunt-lib";
+} from "qhunt-lib/constants";
 import trivias from "./trivias";
-import { QrListParamsValidator } from "qhunt-lib/validators/qr";
 import photohunts from "./photohunts";
 
 const seeders = async () => {
@@ -262,12 +260,10 @@ const seeders = async () => {
     return res;
   });
 
-  const codes = await QrService.list(
-    await QrListParamsValidator.validateAsync({
-      status: QR_STATUS.Publish,
-      limit: 100,
-    })
-  );
+  const codes = await QrService.list({
+    status: "publish",
+    limit: 100,
+  });
   console.log("codes");
   console.log(
     codes.list
