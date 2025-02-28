@@ -41,6 +41,8 @@ const CookiesMiddleware: RequestHandler = async (req, res, next) => {
       res.clearCookie(cookies.TID_API);
       res.clearCookie(cookies.TID_SOCKET);
       res.clearCookie(cookies.TOKEN);
+      res.locals.status = 401;
+
       next(err);
     });
 };
