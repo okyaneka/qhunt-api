@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { response } from "qhunt-lib/helpers";
 import { AuthMiddleware } from "~/middlewares";
-import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
-import { UserRole } from "qhunt-lib";
 import { UserService } from "qhunt-lib/services";
 import { UserListParamsValidator } from "~/validators/user";
+import { USER_ROLES } from "qhunt-lib/constants";
+import ValidationMiddleware from "~/middlewares/ValidationMiddleware";
 
 const path = {
   list: "/list",
@@ -22,7 +22,7 @@ UserRoute.get(
   async (req, res) => {
     const { value } = UserListParamsValidator.validate(req.query);
 
-    const data = await UserService.list({ ...value, role: UserRole.Public });
+    const data = await UserService.list({ ...value, role: USER_ROLES.Public });
 
     res.json(response.success(data));
   }
