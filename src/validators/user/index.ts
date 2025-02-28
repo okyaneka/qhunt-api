@@ -1,11 +1,7 @@
 import validator from "~/helpers/validator";
 import { DefaultListParamsFields } from "~/helpers/validator";
-import {
-  UserListParams,
-  UserLoginPayload,
-  UserPayload,
-  UserRole,
-} from "qhunt-lib";
+import { UserListParams, UserLoginPayload, UserPayload } from "qhunt-lib";
+import { USER_ROLES } from "qhunt-lib/constants";
 
 export const UserLoginPayloadValidator = validator.generate<UserLoginPayload>({
   email: validator.string({ required: true }).email().lowercase(),
@@ -22,7 +18,7 @@ export const UserListParamsValidator = validator.generate<UserListParams>({
   ...DefaultListParamsFields,
   role: validator
     .string({ defaultValue: null })
-    .valid(...Object.values(UserRole)),
+    .valid(...Object.values(USER_ROLES)),
 });
 
 const UserValidator = {
