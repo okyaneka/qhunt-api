@@ -22,6 +22,7 @@ const path = {
   photo: "/profile/photo",
   login: "/login",
   register: "/register",
+  google: "/google-sign",
   logout: "/logout",
 } as const;
 
@@ -33,7 +34,9 @@ AuthRoute.get(
     const TID = res.locals.TID;
     if (!TID) throw new Error("token invalid");
 
-    return await UserPublicService.verify(TID);
+    const user = await UserPublicService.verify(TID);
+
+    return user;
   })
 );
 
@@ -43,7 +46,7 @@ AuthRoute.post(
   handler(async (req, res) => {
     const value = await UserLoginPayloadValidator.validateAsync(req.body);
 
-    const data = await UserService.login(value, env.JWT_SECRET);
+    const data = await UserService.login(value, "email", env.JWT_SECRET);
 
     const { TID, ...user } = data;
 
@@ -72,7 +75,7 @@ AuthRoute.post(
       return;
     }
 
-    const data = await UserService.login(value, env.JWT_SECRET).catch(
+    const data = await UserService.login(value, "email", env.JWT_SECRET).catch(
       (err) => err
     );
 
@@ -88,6 +91,30 @@ AuthRoute.post(
 
     res.json(response.success(user, "register success"));
   }
+);
+
+AuthRoute.post(
+  path.google,
+  handler(async (req, res) => {
+    const userSign = await UserService.googleSign(
+      req.body,
+      String(res.locals.TID)
+    );
+
+    if (!userSign) throw new Error("user.failed_register");
+
+    const data = await UserService.login(
+      { email: userSign.email, password: null },
+      "google",
+      env.JWT_SECRET
+    );
+
+    const { TID, ...user } = data;
+
+    res.cookie(cookies.TOKEN, data.token, cookies.options);
+
+    return user;
+  })
 );
 
 AuthRoute.get(path.profile, AuthMiddleware, async (req, res, next) => {
@@ -135,7 +162,7 @@ AuthRoute.put(
       mimetype: "image/jpeg",
     };
 
-    return await UserService.updatePhoto(payload, auth?.id);
+    return await UserService.updatePhoto(auth?.id, payload);
   })
 );
 
