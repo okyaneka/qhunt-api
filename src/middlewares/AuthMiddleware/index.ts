@@ -23,7 +23,12 @@ const AuthMiddleware: RequestHandler = async (
 
       next();
     })
-    .catch(next);
+    .catch((err) => {
+      res.clearCookie(cookies.TOKEN);
+      res.locals.status = 401;
+
+      next(err);
+    });
 };
 
 export default AuthMiddleware;

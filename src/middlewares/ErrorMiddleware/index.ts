@@ -28,8 +28,9 @@ const ErrorMiddleware: ErrorRequestHandler = (
     }
   });
 
+  const code = Number(res.locals.status || 400);
   console.error(err.stack);
-  res.status(400).json(response.error({}, err.message, 400));
+  res.status(code).json(response.error({}, err.message, code));
 };
 
 export default ErrorMiddleware;
