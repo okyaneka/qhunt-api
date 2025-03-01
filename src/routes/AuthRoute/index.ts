@@ -7,18 +7,23 @@ import {
   UserPayloadValidator,
 } from "~/validators/user";
 import { UserPublicService, UserService } from "qhunt-lib/services";
-import cookies from "~/configs/cookies";
+import cookies, { getCookiesOptions } from "~/configs/cookies";
 import { env } from "~/configs";
 import { handler } from "~/helpers";
-import { UserPublicPayloadValidator } from "~/validators/user-public";
+import {
+  UserPasswordPayloadValidator,
+  UserPublicPayloadValidator,
+} from "~/validators/user-public";
 import uploadFile from "~/plugins/uploadFile";
 import sharp from "sharp";
 import { S3Payload } from "qhunt-lib";
 
 const path = {
   me: "/me",
+  meFull: "/me-full",
   profile: "/profile",
   edit: "/profile/edit",
+  password: "/profile/password",
   photo: "/profile/photo",
   login: "/login",
   register: "/register",
@@ -40,6 +45,19 @@ AuthRoute.get(
   })
 );
 
+AuthRoute.get(
+  path.meFull,
+  AuthMiddleware,
+  handler(async (req, res) => {
+    const TID = res.locals.TID;
+    if (!TID) throw new Error("token invalid");
+
+    const user = await UserPublicService.detail(TID);
+
+    return user;
+  })
+);
+
 AuthRoute.post(
   path.login,
   ValidationMiddleware({ body: UserLoginPayloadValidator }),
@@ -50,9 +68,9 @@ AuthRoute.post(
 
     const { TID, ...user } = data;
 
-    res.cookie(cookies.TID_API, TID, cookies.options);
-    res.cookie(cookies.TID_SOCKET, TID, cookies.options);
-    res.cookie(cookies.TOKEN, data.token, cookies.options);
+    res.cookie(cookies.TID_API, TID, getCookiesOptions());
+    res.cookie(cookies.TID_SOCKET, TID, getCookiesOptions());
+    res.cookie(cookies.TOKEN, data.token, getCookiesOptions());
 
     return user;
   })
@@ -70,9 +88,8 @@ AuthRoute.post(
     ).catch((err) => err);
 
     if (userData instanceof Error) {
-      res.clearCookie(cookies.TOKEN);
-      next(userData);
-      return;
+      res.cookie(cookies.TOKEN, getCookiesOptions(true));
+      return next(userData);
     }
 
     const data = await UserService.login(value, "email", env.JWT_SECRET).catch(
@@ -80,14 +97,13 @@ AuthRoute.post(
     );
 
     if (data instanceof Error) {
-      res.clearCookie(cookies.TOKEN);
-      next(data);
-      return;
+      res.cookie(cookies.TOKEN, getCookiesOptions(true));
+      return next(data);
     }
 
     const { TID, ...user } = data;
 
-    res.cookie(cookies.TOKEN, data.token, cookies.options);
+    res.cookie(cookies.TOKEN, data.token, getCookiesOptions());
 
     res.json(response.success(user, "register success"));
   }
@@ -111,7 +127,7 @@ AuthRoute.post(
 
     const { TID, ...user } = data;
 
-    res.cookie(cookies.TOKEN, data.token, cookies.options);
+    res.cookie(cookies.TOKEN, data.token, getCookiesOptions());
 
     return user;
   })
@@ -141,7 +157,24 @@ AuthRoute.put(
   })
 );
 
-AuthRoute.put(
+AuthRoute.patch(
+  path.password,
+  AuthMiddleware,
+  ValidationMiddleware({ body: UserPasswordPayloadValidator }),
+  handler(async (req, res) => {
+    const payload = await UserPasswordPayloadValidator.validateAsync(req.body);
+    const auth = res.locals.user;
+    const userData = await UserService.updatePassword(auth?.id, payload);
+
+    res.clearCookie(cookies.TID_API, getCookiesOptions(true));
+    res.clearCookie(cookies.TID_SOCKET, getCookiesOptions(true));
+    res.clearCookie(cookies.TOKEN, getCookiesOptions(true));
+
+    return userData;
+  })
+);
+
+AuthRoute.patch(
   path.photo,
   AuthMiddleware,
   uploadFile.single("file"),
@@ -170,9 +203,9 @@ AuthRoute.post(
   path.logout,
   AuthMiddleware,
   handler(async (req, res) => {
-    res.clearCookie(cookies.TID_API);
-    res.clearCookie(cookies.TID_SOCKET);
-    res.clearCookie(cookies.TOKEN);
+    res.clearCookie(cookies.TID_API, getCookiesOptions(true));
+    res.clearCookie(cookies.TID_SOCKET, getCookiesOptions(true));
+    res.clearCookie(cookies.TOKEN, getCookiesOptions(true));
 
     return {};
   })

@@ -18,7 +18,6 @@ const AuthMiddleware: RequestHandler = async (
       const { id } = decode(token) as { id: string };
       const user = await UserService.detail(id);
 
-      res.locals.TID = user.meta.code;
       res.locals.user = { id: user.id, role: user.role };
 
       next();
