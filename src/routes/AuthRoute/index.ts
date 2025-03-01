@@ -10,15 +10,20 @@ import { UserPublicService, UserService } from "qhunt-lib/services";
 import cookies, { getCookiesOptions } from "~/configs/cookies";
 import { env } from "~/configs";
 import { handler } from "~/helpers";
-import { UserPublicPayloadValidator } from "~/validators/user-public";
+import {
+  UserPasswordPayloadValidator,
+  UserPublicPayloadValidator,
+} from "~/validators/user-public";
 import uploadFile from "~/plugins/uploadFile";
 import sharp from "sharp";
 import { S3Payload } from "qhunt-lib";
 
 const path = {
   me: "/me",
+  meFull: "/me-full",
   profile: "/profile",
   edit: "/profile/edit",
+  password: "/profile/password",
   photo: "/profile/photo",
   login: "/login",
   register: "/register",
@@ -35,6 +40,19 @@ AuthRoute.get(
     if (!TID) throw new Error("token invalid");
 
     const user = await UserPublicService.verify(TID);
+
+    return user;
+  })
+);
+
+AuthRoute.get(
+  path.meFull,
+  AuthMiddleware,
+  handler(async (req, res) => {
+    const TID = res.locals.TID;
+    if (!TID) throw new Error("token invalid");
+
+    const user = await UserPublicService.detail(TID);
 
     return user;
   })
@@ -139,7 +157,24 @@ AuthRoute.put(
   })
 );
 
-AuthRoute.put(
+AuthRoute.patch(
+  path.password,
+  AuthMiddleware,
+  ValidationMiddleware({ body: UserPasswordPayloadValidator }),
+  handler(async (req, res) => {
+    const payload = await UserPasswordPayloadValidator.validateAsync(req.body);
+    const auth = res.locals.user;
+    const userData = await UserService.updatePassword(auth?.id, payload);
+
+    res.clearCookie(cookies.TID_API, getCookiesOptions(true));
+    res.clearCookie(cookies.TID_SOCKET, getCookiesOptions(true));
+    res.clearCookie(cookies.TOKEN, getCookiesOptions(true));
+
+    return userData;
+  })
+);
+
+AuthRoute.patch(
   path.photo,
   AuthMiddleware,
   uploadFile.single("file"),

@@ -1,5 +1,10 @@
+import Joi from "joi";
 import validator from "~/helpers/validator";
-import { UserPublicForeign, UserPublicPayload } from "qhunt-lib";
+import {
+  UserPasswordPayload,
+  UserPublicForeign,
+  UserPublicPayload,
+} from "qhunt-lib";
 import { USER_PUBLIC_GENDER } from "qhunt-lib/constants";
 
 export const UserPublicForeignValidator = validator.generate<UserPublicForeign>(
@@ -9,6 +14,17 @@ export const UserPublicForeignValidator = validator.generate<UserPublicForeign>(
     name: validator.string({ required: true, allow: "" }),
   }
 );
+
+export const UserPasswordPayloadValidator =
+  validator.generate<UserPasswordPayload>({
+    old_password: validator.string({ required: false, allow: null }),
+    new_password: validator
+      .string({ required: true })
+      .invalid(Joi.ref("old_password")),
+    confirm_password: validator
+      .string({ required: true })
+      .valid(Joi.ref("new_password")),
+  });
 
 export const UserPublicPayloadValidator = validator.generate<UserPublicPayload>(
   {
