@@ -34,6 +34,7 @@ const CookiesMiddleware: RequestHandler = async (req, res, next) => {
         }
       } else if (TID) {
         user = await UserPublicService.verify(TID);
+        if (user.user?.id) throw new Error("user.token_invalid");
       }
 
       await setupUser(res, user);
