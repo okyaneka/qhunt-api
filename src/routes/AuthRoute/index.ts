@@ -7,7 +7,7 @@ import {
   UserPayloadValidator,
 } from "~/validators/user";
 import { UserPublicService, UserService } from "qhunt-lib/services";
-import cookies from "~/configs/cookies";
+import cookies, { getCookiesOptions } from "~/configs/cookies";
 import { env } from "~/configs";
 import { handler } from "~/helpers";
 import { UserPublicPayloadValidator } from "~/validators/user-public";
@@ -50,9 +50,9 @@ AuthRoute.post(
 
     const { TID, ...user } = data;
 
-    res.cookie(cookies.TID_API, TID, cookies.options);
-    res.cookie(cookies.TID_SOCKET, TID, cookies.options);
-    res.cookie(cookies.TOKEN, data.token, cookies.options);
+    res.cookie(cookies.TID_API, TID, getCookiesOptions());
+    res.cookie(cookies.TID_SOCKET, TID, getCookiesOptions());
+    res.cookie(cookies.TOKEN, data.token, getCookiesOptions());
 
     return user;
   })
@@ -70,9 +70,8 @@ AuthRoute.post(
     ).catch((err) => err);
 
     if (userData instanceof Error) {
-      res.clearCookie(cookies.TOKEN);
-      next(userData);
-      return;
+      res.cookie(cookies.TOKEN, getCookiesOptions(true));
+      return next(userData);
     }
 
     const data = await UserService.login(value, "email", env.JWT_SECRET).catch(
@@ -80,14 +79,13 @@ AuthRoute.post(
     );
 
     if (data instanceof Error) {
-      res.clearCookie(cookies.TOKEN);
-      next(data);
-      return;
+      res.cookie(cookies.TOKEN, getCookiesOptions(true));
+      return next(data);
     }
 
     const { TID, ...user } = data;
 
-    res.cookie(cookies.TOKEN, data.token, cookies.options);
+    res.cookie(cookies.TOKEN, data.token, getCookiesOptions());
 
     res.json(response.success(user, "register success"));
   }
@@ -111,7 +109,7 @@ AuthRoute.post(
 
     const { TID, ...user } = data;
 
-    res.cookie(cookies.TOKEN, data.token, cookies.options);
+    res.cookie(cookies.TOKEN, data.token, getCookiesOptions());
 
     return user;
   })
@@ -170,9 +168,9 @@ AuthRoute.post(
   path.logout,
   AuthMiddleware,
   handler(async (req, res) => {
-    res.clearCookie(cookies.TID_API);
-    res.clearCookie(cookies.TID_SOCKET);
-    res.clearCookie(cookies.TOKEN);
+    res.clearCookie(cookies.TID_API, getCookiesOptions(true));
+    res.clearCookie(cookies.TID_SOCKET, getCookiesOptions(true));
+    res.clearCookie(cookies.TOKEN, getCookiesOptions(true));
 
     return {};
   })

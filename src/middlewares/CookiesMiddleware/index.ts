@@ -1,4 +1,4 @@
-import cookies from "~/configs/cookies";
+import cookies, { getCookiesOptions } from "~/configs/cookies";
 import { RequestHandler, Response } from "express";
 import { UserPublicService, UserService } from "qhunt-lib/services";
 import { UserPublic } from "qhunt-lib";
@@ -9,12 +9,14 @@ import { verify } from "jsonwebtoken";
 const setupUser = async (res: Response, user?: UserPublic | null) => {
   user = user || (await UserPublicService.setup());
 
-  res.cookie(cookies.TID_API, user.code, cookies.options);
-  res.cookie(cookies.TID_SOCKET, user.code, cookies.options);
+  res.cookie(cookies.TID_API, user.code, getCookiesOptions());
+  res.cookie(cookies.TID_SOCKET, user.code, getCookiesOptions());
   res.locals.TID = user.code;
 };
 
 const CookiesMiddleware: RequestHandler = async (req, res, next) => {
+  if (req.path === "/logout") return next();
+
   Promise.resolve()
     .then(async () => {
       const TOKEN = req.cookies[cookies.TOKEN];
@@ -38,9 +40,9 @@ const CookiesMiddleware: RequestHandler = async (req, res, next) => {
       next();
     })
     .catch(async (err) => {
-      res.clearCookie(cookies.TID_API);
-      res.clearCookie(cookies.TID_SOCKET);
-      res.clearCookie(cookies.TOKEN);
+      res.clearCookie(cookies.TID_API, getCookiesOptions(true));
+      res.clearCookie(cookies.TID_SOCKET, getCookiesOptions(true));
+      res.clearCookie(cookies.TOKEN, getCookiesOptions(true));
       res.locals.status = 401;
 
       next(err);

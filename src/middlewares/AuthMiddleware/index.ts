@@ -3,6 +3,7 @@ import { response } from "qhunt-lib/helpers";
 import { decode, verify } from "jsonwebtoken";
 import { cookies, env } from "~/configs";
 import { UserService } from "qhunt-lib/services";
+import { getCookiesOptions } from "~/configs/cookies";
 
 const AuthMiddleware: RequestHandler = async (
   req: Request,
@@ -24,7 +25,7 @@ const AuthMiddleware: RequestHandler = async (
       next();
     })
     .catch((err) => {
-      res.clearCookie(cookies.TOKEN);
+      res.clearCookie(cookies.TOKEN, getCookiesOptions(true));
       res.locals.status = 401;
 
       next(err);
