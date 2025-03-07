@@ -2,7 +2,7 @@ import { Request, Router } from "express";
 import { response } from "qhunt-lib/helpers";
 import { PhotoHuntService } from "qhunt-lib/services";
 import { ValidationMiddleware } from "~/middlewares";
-import { PhotoHuntPayloadValidator } from "~/validators/photo-hunt";
+import { PhotoHuntPayloadValidator } from "~/validators/photohunt";
 
 type Params = {
   id: string;
