@@ -37,7 +37,7 @@ importers:
         version: 1.4.5-lts.1
       qhunt-lib:
         specifier: github:okyaneka/qhunt-lib
-        version: https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/3cdcfe4ce42a68b87e0308af287e2b2be0f665e4(@aws-sdk/client-s3@3.758.0)(firebase@11.4.0)(ioredis@5.5.0)(mongoose@8.11.0)
+        version: https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/06f247aff60c9bceef98135370aec48972cc5437(@aws-sdk/client-s3@3.758.0)(firebase@11.4.0)(ioredis@5.6.0)(mongoose@8.12.1)
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
@@ -1277,8 +1277,8 @@ packages:
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
-  ioredis@5.5.0:
-    resolution: {integrity: sha512-7CutT89g23FfSa8MDoIFs2GYYa0PaNiW/OrT+nRyjRXHDZd17HmIgy+reOQ/yhh72NznNjGuS8kbCAcA4Ro4mw==}
+  ioredis@5.6.0:
+    resolution: {integrity: sha512-tBZlIIWbndeWBWCXWZiqtOF/yxf6yZX3tAlTJ7nfo5jhd6dctNxF7QnYlZLZ1a0o0pDoen7CgZqO+zjNaFbJAg==}
     engines: {node: '>=12.22.0'}
 
   ipaddr.js@1.9.1:
@@ -1421,11 +1421,11 @@ packages:
   mongodb-connection-string-url@3.0.2:
     resolution: {integrity: sha512-rMO7CGo/9BFwyZABcKAWL8UJwH/Kc2x0g72uhDWzG48URRax5TCIcJ7Rc3RZqffZzO/Gwff/jyKwCU9TN8gehA==}
 
-  mongodb@6.13.1:
-    resolution: {integrity: sha512-gdq40tX8StmhP6akMp1pPoEVv+9jTYFSrga/g23JxajPAQhH39ysZrHGzQCSd9PEOnuEQEdjIWqxO7ZSwC0w7Q==}
+  mongodb@6.14.2:
+    resolution: {integrity: sha512-kMEHNo0F3P6QKDq17zcDuPeaywK/YaJVCEQRzPF3TOM/Bl9MFg64YE5Tu7ifj37qZJMhwU1tl2Ioivws5gRG5Q==}
     engines: {node: '>=16.20.1'}
     peerDependencies:
-      '@aws-sdk/credential-providers': ^3.632.0
+      '@aws-sdk/credential-providers': ^3.188.0
       '@mongodb-js/zstd': ^1.1.0 || ^2.0.0
       gcp-metadata: ^5.2.0
       kerberos: ^2.0.1
@@ -1448,8 +1448,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@8.11.0:
-    resolution: {integrity: sha512-xaQSuaLk2JKmXI5zDVVWXVCQTnWhAe8MFOijMnwOuP/wucKVphd3f+ouDKivCDMGjYBDrR7dtoyV0U093xbKqA==}
+  mongoose@8.12.1:
+    resolution: {integrity: sha512-UW22y8QFVYmrb36hm8cGncfn4ARc/XsYWQwRTaj0gxtQk1rDuhzDO1eBantS+hTTatfAIS96LlRCJrcNHvW5+Q==}
     engines: {node: '>=16.20.1'}
 
   mpath@0.9.0:
@@ -1536,9 +1536,9 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  qhunt-lib@https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/3cdcfe4ce42a68b87e0308af287e2b2be0f665e4:
-    resolution: {tarball: https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/3cdcfe4ce42a68b87e0308af287e2b2be0f665e4}
-    version: 0.0.13
+  qhunt-lib@https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/06f247aff60c9bceef98135370aec48972cc5437:
+    resolution: {tarball: https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/06f247aff60c9bceef98135370aec48972cc5437}
+    version: 0.0.14
     peerDependencies:
       '@aws-sdk/client-s3': ^3.750.0
       firebase: ^11.3.1
@@ -3574,7 +3574,7 @@ snapshots:
 
   inherits@2.0.4: {}
 
-  ioredis@5.5.0:
+  ioredis@5.6.0:
     dependencies:
       '@ioredis/commands': 1.2.0
       cluster-key-slot: 1.1.2
@@ -3708,17 +3708,17 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 14.1.1
 
-  mongodb@6.13.1:
+  mongodb@6.14.2:
     dependencies:
       '@mongodb-js/saslprep': 1.2.0
       bson: 6.10.3
       mongodb-connection-string-url: 3.0.2
 
-  mongoose@8.11.0:
+  mongoose@8.12.1:
     dependencies:
       bson: 6.10.3
       kareem: 2.6.3
-      mongodb: 6.13.1
+      mongodb: 6.14.2
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
@@ -3820,7 +3820,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  qhunt-lib@https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/3cdcfe4ce42a68b87e0308af287e2b2be0f665e4(@aws-sdk/client-s3@3.758.0)(firebase@11.4.0)(ioredis@5.5.0)(mongoose@8.11.0):
+  qhunt-lib@https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/06f247aff60c9bceef98135370aec48972cc5437(@aws-sdk/client-s3@3.758.0)(firebase@11.4.0)(ioredis@5.6.0)(mongoose@8.12.1):
     dependencies:
       '@aws-sdk/client-s3': 3.758.0
       '@zxing/browser': 0.1.5(@zxing/library@0.21.3)
@@ -3828,10 +3828,10 @@ snapshots:
       bcryptjs: 2.4.3
       dayjs: 1.11.13
       firebase: 11.4.0
-      ioredis: 5.5.0
+      ioredis: 5.6.0
       joi: 17.13.3
       jsonwebtoken: 9.0.2
-      mongoose: 8.11.0
+      mongoose: 8.12.1
       slugify: 1.6.6
 
   qs@6.13.0:
