@@ -37,7 +37,7 @@ importers:
         version: 1.4.5-lts.1
       qhunt-lib:
         specifier: github:okyaneka/qhunt-lib
-        version: https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/06f247aff60c9bceef98135370aec48972cc5437(@aws-sdk/client-s3@3.758.0)(firebase@11.4.0)(ioredis@5.6.0)(mongoose@8.12.1)
+        version: https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/d6d0a5d11aa0828edd8dcf647e7c0371c11943a3(@aws-sdk/client-s3@3.758.0)(firebase@11.4.0)(ioredis@5.6.0)(mongoose@8.12.1)
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
@@ -1543,8 +1543,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  qhunt-lib@https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/06f247aff60c9bceef98135370aec48972cc5437:
-    resolution: {tarball: https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/06f247aff60c9bceef98135370aec48972cc5437}
+  qhunt-lib@https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/d6d0a5d11aa0828edd8dcf647e7c0371c11943a3:
+    resolution: {tarball: https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/d6d0a5d11aa0828edd8dcf647e7c0371c11943a3}
     version: 0.0.14
     peerDependencies:
       '@aws-sdk/client-s3': ^3.750.0
@@ -3835,7 +3835,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  qhunt-lib@https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/06f247aff60c9bceef98135370aec48972cc5437(@aws-sdk/client-s3@3.758.0)(firebase@11.4.0)(ioredis@5.6.0)(mongoose@8.12.1):
+  qhunt-lib@https://codeload.github.com/okyaneka/qhunt-lib/tar.gz/d6d0a5d11aa0828edd8dcf647e7c0371c11943a3(@aws-sdk/client-s3@3.758.0)(firebase@11.4.0)(ioredis@5.6.0)(mongoose@8.12.1):
     dependencies:
       '@aws-sdk/client-s3': 3.758.0
       '@zxing/browser': 0.1.5(@zxing/library@0.21.3)
