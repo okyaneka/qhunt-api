@@ -17,6 +17,7 @@ export const FeaturePayloadValidator = validator.generate<
   status: validator
     .string({ required: true })
     .valid(...Object.values(FEATURE_STATUS)),
+  featured: validator.boolean({ defaultValue: false }),
   type: validator
     .string({ required: true })
     .valid(...Object.values(FEATURE_TYPES)),
