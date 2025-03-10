@@ -29,10 +29,10 @@ const seeders = async () => {
   await UserChallengeModel.deleteMany({}).then(() =>
     console.log("UserChallengeModel truncated")
   );
-  await UserModel.deleteMany({}).then(() => console.log("UserModel truncated"));
-  await UserPublicModel.deleteMany({}).then(() =>
-    console.log("UserPublicModel truncated")
-  );
+  // await UserModel.deleteMany({}).then(() => console.log("UserModel truncated"));
+  // await UserPublicModel.deleteMany({}).then(() =>
+  //   console.log("UserPublicModel truncated")
+  // );
   await UserStageModel.deleteMany({}).then(() =>
     console.log("UserStageModel truncated")
   );
