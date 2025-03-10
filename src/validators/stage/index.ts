@@ -7,6 +7,7 @@ import { STAGE_STATUS } from "qhunt-lib/constants";
 export const StageSettingsValidator = validator.generate<
   StagePayload["settings"]
 >({
+  unlockAll: validator.boolean({ defaultValue: false }),
   canDoRandomChallenges: validator.boolean({ defaultValue: false }),
   canStartFromChallenges: validator.boolean({ defaultValue: false }),
   periode: PeriodeValidator.allow(null),

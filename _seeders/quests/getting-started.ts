@@ -16,7 +16,6 @@ import {
   CHALLENGE_TYPES,
   STAGE_STATUS,
 } from "qhunt-lib/constants";
-import dayjs from "dayjs";
 
 const GettingStarted = async () => {
   const quest = await StageService.create({
@@ -24,6 +23,7 @@ const GettingStarted = async () => {
     epilogue: [],
     prologue: [],
     settings: {
+      unlockAll: true,
       canDoRandomChallenges: false,
       canStartFromChallenges: false,
       periode: null,
@@ -34,14 +34,17 @@ const GettingStarted = async () => {
       "Selamat datang Petualang!",
       "Selamat datang di dunia Utaraa!",
       "Sebelum memulai petualanganmu, Aku ingin memberikan sedikit informasi tentang cara menggunakan Utaraa",
-      "Jadi Aku minta tolong untuk dibaca baik-baik",
+      "Jadi tolong untuk disimak dengan baik",
+      "Oke 👌?",
+      "Utaraa merupakan sebuah platform game petualangan berbasis real-world interactive",
+      "Yang mengajak pemain untuk menjelajah, menyelesaikan quest seru, dan menaklukkan berbagai tantangan di dunia nyata!",
       "Setiap quest memiliki beberapa tantangan",
-      "Tantangan yang ada harus kamu buka dengan cara mencari kode QR yang tersebar di sekitarmu",
-      "Kamu bisa membukanya dengan cara memindai kode QR tersebut",
-      "Setiap tantangan yang diselesaikan akan memberikanmu poin",
+      "Dan setiap tantangan secara bawaan masih terkunci",
+      "Untuk membukanya, kamu harus mencari kode QR yang tersebar di sekitarmu kemudian memindainya",
+      "Setiap tantangan yang kamu kerjakan dan selesai, kamu akan mendapatkan poin",
       "Poin yang kamu dapatkan akan diakumulasikan menjadi skor akhir",
       "Yang kemudian akan menentukan posisimu di leaderboard",
-      "Ini adalah quest Awal Perjalananmu. Jadi akan aku buka semua tantangan untukmu!",
+      "Ini adalah quest Awal Perjalananmu. Jadi Aku akan membuka semua tantangan untukmu!",
       "Aku mengucapkan selamat berpetualang dan semoga beruntung!",
     ],
   });

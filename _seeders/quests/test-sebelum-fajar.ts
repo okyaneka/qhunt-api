@@ -19,6 +19,7 @@ const SebelumFajar = async () => {
     prologue: [],
     contents: [],
     settings: {
+      unlockAll: false,
       canDoRandomChallenges: false,
       canStartFromChallenges: true,
       periode: {
