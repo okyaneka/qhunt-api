@@ -21,6 +21,8 @@ import dayjs from "dayjs";
 const GettingStarted = async () => {
   const quest = await StageService.create({
     contents: [],
+    epilogue: [],
+    prologue: [],
     settings: {
       canDoRandomChallenges: false,
       canStartFromChallenges: false,

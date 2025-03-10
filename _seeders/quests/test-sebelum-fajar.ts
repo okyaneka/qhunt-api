@@ -15,6 +15,8 @@ import dayjs from "dayjs";
 
 const SebelumFajar = async () => {
   const stage = await StageService.create({
+    epilogue: [],
+    prologue: [],
     contents: [],
     settings: {
       canDoRandomChallenges: false,
