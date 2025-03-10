@@ -21,6 +21,8 @@ export const StageListParamsValidator = validator.generate<StageListParams>({
 
 export const StagePayloadValidator = validator.generate<StagePayload>({
   name: validator.string({ required: true }),
+  prologue: validator.array(Joi.string()).default([]),
+  epilogue: validator.array(Joi.string()).default([]),
   storyline: validator.array(Joi.string()).default([]),
   contents: validator.array(Joi.string()).default([]),
   status: validator

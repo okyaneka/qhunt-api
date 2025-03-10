@@ -6,11 +6,14 @@ import {
   StagePayloadValidator,
   StageListParamsValidator,
 } from "~/validators/stage";
+import { handler } from "~/helpers";
+import { StageQrs } from "qhunt-lib/services/stage-service";
 
 const path = {
   list: "/list",
   create: "/create",
   detail: "/:id/detail",
+  detailQr: "/:id/detail-qr",
   update: "/:id/update",
   delete: "/:id/delete",
 } as const;
@@ -56,6 +59,13 @@ StageRoute.get(path.detail, async (req, res) => {
 
   res.json(response.success(item));
 });
+
+StageRoute.get(
+  path.detailQr,
+  handler(async (req, res) => {
+    return await StageQrs(req.params.id);
+  })
+);
 
 StageRoute.put(
   path.update,

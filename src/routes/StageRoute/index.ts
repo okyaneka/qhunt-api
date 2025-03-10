@@ -1,10 +1,13 @@
 import { Router } from "express";
 import { response } from "qhunt-lib/helpers";
 import { ValidationMiddleware } from "~/middlewares";
-import { LeaderboardService, UserStageService } from "qhunt-lib/services";
+import { UserStageService } from "qhunt-lib/services";
 import { UserStageListParamsValidator } from "~/validators/user-stage";
 
-const path = { list: "/list", detail: "/:id/detail" } as const;
+const path = {
+  list: "/list",
+  detail: "/:id/detail",
+} as const;
 
 const StageRoute = Router();
 
